@@ -1,9 +1,10 @@
-    #include <stdio.h>
+#include <stdio.h>
     #include <stdlib.h>
     #include <stdbool.h>
     #include "client.h" 
     #include <string.h>
     #include <ctype.h>
+    #include <time.h>
 
 
     #define MSG_MAX_SIZE 350
@@ -28,7 +29,9 @@
 
     char marcao [20] [40] ,map [20] [40], tela [20] [40];
     data move;
-    int x=20,y=10,id,xA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1},yA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1};
+    int id,xA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1},yA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1};
+    int x;
+    int y;
     char pers[13] = {'X','Y','Z','J','D','L','U','I','S','F','E','P','M'};
     void monta () {
         int i_des=0,j_des=0;
@@ -71,9 +74,10 @@
 
 
     }
-    void marcaPosicao(int x, int y, int px,int py, char personagem){
+
+    void marcaPosicao(int xx, int yy, int px,int py, char personagem){
         marcao[py] [px] = personagem;
-        marcao[y] [x] = 32;
+        marcao[yy] [xx] = 32;
     } 
     void mostraTela(){
         int i,j;
@@ -184,7 +188,12 @@
     }
 
     int main() {
+
+        srand((unsigned)time(NULL));
+        x=rand()%41-1;
+        y=rand()%21-1;
         monta();
+        
         move.X=x;
         move.Y=y;
         assertConnection();
