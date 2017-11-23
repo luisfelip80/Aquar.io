@@ -58,6 +58,8 @@ void monta () {
 
 int main() {
     int t;
+    char client_names[MAX_CHAT_CLIENTS][LOGIN_MAX_SIZE];
+    char str_buffer[BUFFER_SIZE];
     data move_aux;
     serverInit(MAX_CHAT_CLIENTS);
     puts("Server is running!!");
