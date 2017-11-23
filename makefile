@@ -1,12 +1,12 @@
-#UNCOMMENT THESE TO COMPILE SIMPLE CHAT
+#UNCOMMENT THESE TO COMPILE TERMINAL GAME
 CLIENTDIR := examples/Aquar/client
 SERVERDIR := examples/Aquar/server
 COMMONDIR := examples/simpleChat/common
 
-#UNCOMMENT THESE TO COMPILE GRAPHIC CHAT
-#CLIENTDIR := examples/graphicChat/client
-#SERVERDIR := examples/graphicChat/server
-#COMMONDIR := examples/graphicChat/common
+#UNCOMMENT THESE TO COMPILE WHIT GRAPHIC
+#CLIENTDIR := examples/AllegroAquar/client
+#SERVERDIR := examples/AllegroAquar/server
+#COMMONDIR := examples/AllegroAquar/common
 
 CC := gcc -std=c99
 RM := rm -f

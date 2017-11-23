@@ -9,7 +9,7 @@ INITIALIZATION OF BASIC CORE MODULES:
 --ALLEGRO TTF FONT SUPPORT
 --ALLEGRO PRIMITIVES
 --EVENT QUEUE
-*/
+
 bool coreInit()
 {
     //modules and add-ons initialization
@@ -78,7 +78,7 @@ bool windowInit(int W, int H, char title[])
 //FOR INITIALIZING MAIN EXTERNAL INPUTS (KEYBOARD, MOUSE AND CURSOR)
 bool inputInit()
 {
-	/*------------------------------MOUSE--------------------------------*/
+	
 	//Inicializa Mouse
 	if (!al_install_mouse())
     {
@@ -94,16 +94,14 @@ bool inputInit()
         al_destroy_display(main_window);
         return false;
     }
-    /*------------------------------MOUSE--------------------------------*/
-
-    /*------------------------------KEYBOARD------------------------------*/
+   
     if (!al_install_keyboard())
     {
         fprintf(stderr, "Falha ao inicializar o teclado.\n");
         return false;
     }
 
-    /*------------------------------KEYBOARD------------------------------*/
+  
 
 
     //Registra mouse e teclado na fila de eventos
@@ -150,7 +148,6 @@ void readInput(ALLEGRO_EVENT event, char str[], int limit)
     }
 }
 
-
 //FPS CONTROL (FPS IS DEFINED IN ACORE.H)
 void startTimer()
 {
@@ -182,7 +179,7 @@ void allegroEnd()
 //MODIFY THIS TO LOAD YOUR OWN FONTS (FONT POINTERS ARE DEFINED AT ACORE.H)
 bool fontInit()
 {
-    /*------------------------------FONTE--------------------------------*/
+   
     start = al_load_font("examples/graphicChat/Resources/Fonts/pressStart.ttf", 16, 0);
     if (!start)
     {
@@ -219,3 +216,4 @@ bool loadGraphics()
 
     return true;
 }
+*/

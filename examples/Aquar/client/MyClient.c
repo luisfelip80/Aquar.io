@@ -30,7 +30,7 @@
     // matriz marcao é a matriz onde é salva a posição de todos os jogadores.
     // map é o mapa que é copiado para a matriz tela para mostrar no terminal.
     char marcao [20] [40] ,map [20] [40], tela [20] [40];
-    data move;
+    data dados;
     // posição inicial dos outros playes, pode ser qualquer valor pois eles vão ser enviados para matriz marcão e serão
     // apagados como xAnterior e yAnterior.
     int id,xA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1},yA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1};
@@ -159,13 +159,13 @@
         // se conectar, pede nome, salva nome na struct de mensagem e manda para o server.
         if(ans == SERVER_UP){
             printf("Nome\n");
-            scanf(" %[^\n]",move.nome);
-            sendMsgToServer((void *)&move,sizeof(data));
+            scanf(" %[^\n]",dados.nome);
+            sendMsgToServer((void *)&dados,sizeof(data));
 
             // espera mensagem do servidor. O servidor é quem vai definir o id desse client, ele precisa desse ip para se identificar.
-            recvMsgFromServer(&move,WAIT_FOR_IT);
+            recvMsgFromServer(&dados,WAIT_FOR_IT);
             // salva id recebido.
-            id=move.id;
+            id=dados.id;
             printf("%d\n",id );      
         }
     }
@@ -179,37 +179,37 @@
             // se alguma tecla for pressionada e for diferente de 'l', envia posição, id e tecla.
             ch=getch();
             if(ch!='l'){
-                move.tecla = ch;
-                move.id=id;
-                move.X=x;
-                move.Y=y;
-                sendMsgToServer((void *)&move,sizeof(data));
+                dados.tecla = ch;
+                dados.id=id;
+                dados.X=x;
+                dados.Y=y;
+                sendMsgToServer((void *)&dados,sizeof(data));
                 ch='l';
             }
 
             // receber mensagem do servidor
         
-            int ret = recvMsgFromServer(&move,DONT_WAIT);
+            int ret = recvMsgFromServer(&dados,DONT_WAIT);
             // se receber server diconect, acaba com a função
             if (ret == SERVER_DISCONNECTED) {
               return;
             } 
             // se houver mensagem, ler os dados:
             else if (ret != NO_MESSAGE) {
-                printf("per %d id %d \n", move.permissao,move.id);
+                printf("per %d id %d \n", dados.permissao,dados.id);
                  // se a permição para o pedido enviado for igual a 1, o client executa o que pediu para fazer.
-                 if(move.permissao == 1 && id == move.id){
-                     marcaPosicao(x,y,move.X,move.Y,pers[id]);
+                 if(dados.permissao == 1 && id == dados.id){
+                     marcaPosicao(x,y,dados.X,dados.Y,pers[id]);
                      mostraTela();
-                     x=move.X;
-                     y=move.Y;
+                     x=dados.X;
+                     y=dados.Y;
                 }
                 // se receber mensagem do server, mas o id não for o seu, mostra essa posição como sendo outro jogador.
-                if(move.permissao == 1 && id != move.id){
-                    marcaPosicao(xA[move.id],yA[move.id],move.X,move.Y,pers[move.id]);
+                else if(dados.permissao == 1 && id != dados.id){
+                    marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,pers[dados.id]);
                     mostraTela();
-                    xA[move.id]=move.X;
-                    yA[move.id]=move.Y;
+                    xA[dados.id]=dados.X;
+                    yA[dados.id]=dados.Y;
 
                 }
             }
@@ -221,8 +221,8 @@
         GeraPosicao();
         monta();
         
-        move.X=x;
-        move.Y=y;
+        dados.X=x;
+        dados.Y=y;
         assertConnection();
         while(1) {
             // roda game.

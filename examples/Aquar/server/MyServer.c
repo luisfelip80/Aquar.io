@@ -13,10 +13,10 @@ typedef struct {
       char tecla;
       char nome[30];
 }data;
-data move;
+data dados;
 
 char map [20] [40];
-data move;
+data dados;
 
 // montando mapa igual ao feito no cliente.    
 void monta () {
@@ -60,7 +60,7 @@ int main() {
     int t;
     char client_names[MAX_CHAT_CLIENTS][LOGIN_MAX_SIZE];
     char str_buffer[BUFFER_SIZE];
-    data move_aux;
+    data dados_aux;
     serverInit(MAX_CHAT_CLIENTS);
     puts("Server is running!!");
     monta();
@@ -71,88 +71,88 @@ int main() {
         // Primeira vez que conecta. Não estiva conectado
         if (id != NO_CONNECTION) {
         	//Esperar o nome.
-            recvMsgFromClient(&move, id, WAIT_FOR_IT);
-            strcpy(client_names[id], move.nome);
+            recvMsgFromClient(&dados, id, WAIT_FOR_IT);
+            strcpy(client_names[id], dados.nome);
             strcpy(str_buffer, client_names[id]);
             strcat(str_buffer, " connected to server");
             printf("%s\n",str_buffer );
             // pegar p id gerado pelo server
-            move.id=id;
+            dados.id=id;
             // envia para esse cliente que acabou de se conectar o seu id.
-            sendMsgToClient(&move, sizeof(data),id);
+            sendMsgToClient(&dados, sizeof(data),id);
             // informa a todos que um novo jogador entrou
-            broadcast(&move, sizeof(data));
+            broadcast(&dados, sizeof(data));
         }
 
         // salva mensagens não lidas em uma estrutura auxiliar.
-        struct msg_ret_t msg_ret = recvMsg(&move_aux);
+        struct msg_ret_t msg_ret = recvMsg(&dados_aux);
         //mensagem nova
         if (msg_ret.status == MESSAGE_OK) {
             
             // pega tecla recebida, se for 'w':
-            if(move_aux.tecla == 'w'){
-                //printf("%c  x %d  y  %d \n", move_aux.tecla, move_aux.X, move_aux.Y);
+            if(dados_aux.tecla == 'w'){
+                //printf("%c  x %d  y  %d \n", dados_aux.tecla, dados_aux.X, dados_aux.Y);
                 // valida nova posição somando ou subtraindo o valor de movimento, essas somas e subtrações dependem
                 // da tecla que foi recevida.
 
-                if(move_aux.Y-1>=0 && map[move_aux.Y-1] [move_aux.X]!='l'){
+                if(dados_aux.Y-1>=0 && map[dados_aux.Y-1] [dados_aux.X]!='l'){
                     //printf("ok\n");
                     // Caso seja ok a validação, faz a mudança no valor recebido e reenvia ele alterado.
-                    move.Y = move_aux.Y-1;
-                    move.X = move_aux.X;
+                    dados.Y = dados_aux.Y-1;
+                    dados.X = dados_aux.X;
                     // reevia o id recebido.
-                    move.id = move_aux.id;
+                    dados.id = dados_aux.id;
 
-                    //printf("id %d\n",move.id);
+                    //printf("id %d\n",dados.id);
                     // concede permissão.
-                    move.permissao=1;
-                    //printf("permi %d\n",move.permissao);
-                    broadcast(&move, sizeof(data));    
+                    dados.permissao=1;
+                    //printf("permi %d\n",dados.permissao);
+                    broadcast(&dados,sizeof(data));
                 }
                 else {
-                    move.permissao = 0;
-                    broadcast(&move, sizeof(data));   
+                    dados.permissao = 0;
+                    broadcast(&dados,sizeof(data));
                 }
             }
 
             // iguais a 'w', muda apenas a alteração no valor da posição
-            if(move_aux.tecla == 's'){
-                if(move_aux.Y+1<20 && map[move_aux.Y+1] [move_aux.X]!='l'){
-                    move.Y= move_aux.Y+1;
-                    move.X = move_aux.X;
-                    move.id = move_aux.id;
-                    move.permissao=1;
-                    broadcast(&move, sizeof(data));    
+            if(dados_aux.tecla == 's'){
+                if(dados_aux.Y+1<20 && map[dados_aux.Y+1] [dados_aux.X]!='l'){
+                    dados.Y= dados_aux.Y+1;
+                    dados.X = dados_aux.X;
+                    dados.id = dados_aux.id;
+                    dados.permissao=1;    
+                    broadcast(&dados,sizeof(data));
                 }
                 else {
-                    move.permissao = 0;
-                    broadcast(&move, sizeof(data));   
+                    dados.permissao = 0;
+                    broadcast(&dados,sizeof(data));
                 }
             }
-            if(move_aux.tecla == 'a' ){
-                if(move_aux.X-1>=0 && map[move_aux.Y] [move_aux.X-1]!='l'){
-                    move.X= move_aux.X-1;
-                    move.Y = move_aux.Y;
-                    move.id = move_aux.id;
-                    move.permissao=1;
-                    broadcast(&move, sizeof(data));    
+            if(dados_aux.tecla == 'a' ){
+                if(dados_aux.X-1>=0 && map[dados_aux.Y] [dados_aux.X-1]!='l'){
+                    dados.X= dados_aux.X-1;
+                    dados.Y = dados_aux.Y;
+                    dados.id = dados_aux.id;
+                    dados.permissao=1;    
+                    broadcast(&dados,sizeof(data));
                 }
                 else {
-                    move.permissao = 0;
-                    broadcast(&move, sizeof(data));   
+                    dados.permissao = 0; 
+                    broadcast(&dados,sizeof(data));  
                 }
             }
-            if(move_aux.tecla == 'd'){
-                if(move_aux.X+1<40 && map[move_aux.Y] [move_aux.X+1]!='l'){
-                    move.X= move_aux.X+1;
-                    move.Y = move_aux.Y;
-                    move.id = move_aux.id;
-                    move.permissao=1;
-                    broadcast(&move, sizeof(data));    
+            if(dados_aux.tecla == 'd'){
+                if(dados_aux.X+1<40 && map[dados_aux.Y] [dados_aux.X+1]!='l'){
+                    dados.X= dados_aux.X+1;
+                    dados.Y = dados_aux.Y;
+                    dados.id = dados_aux.id;
+                    dados.permissao=1;
+                    broadcast(&dados,sizeof(data));
                 }
                 else {
-                    move.permissao = 0;
-                    broadcast(&move, sizeof(data));   
+                    dados.permissao = 0; 
+                    broadcast(&dados,sizeof(data));
                 }
             }
             

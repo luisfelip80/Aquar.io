@@ -12,49 +12,5 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define FPS 60
-#define WIDTH  640
-#define HEIGHT 480
-#define IP_MAX_SIZE 100
-
-double startingTime;
-
-ALLEGRO_DISPLAY *main_window;
-ALLEGRO_EVENT_QUEUE *eventsQueue;
-
-//========================
-//FONT AND BITMAP POINTERS
-ALLEGRO_FONT *ubuntu;
-ALLEGRO_FONT *start;
-
-ALLEGRO_BITMAP *objects;
-ALLEGRO_BITMAP *fundo;
-//========================
-//========================
-
-//EXAMPLE STRUCT
-typedef struct DADOS{
-    int X,Y;
-}data;
-
-
-//MAIN ALLEGRO FUNCTIONS
-bool coreInit();
-bool windowInit(int W, int H, char title[]);
-bool inputInit();
-void allegroEnd();
-
-//FPS CONTROL FUNCTIONS
-void startTimer();
-double getTimer();
-void FPSLimit();
-
-//RESOURCE LOADING FUNCTIONS
-bool loadGraphics();
-bool fontInit();
-
-//INPUT READING FUNCTION
-void readInput(ALLEGRO_EVENT event, char str[], int limit);
-
 
 #endif
