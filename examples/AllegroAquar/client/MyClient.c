@@ -18,27 +18,17 @@
 #define ALTURA_TELA 480
 
 typedef struct {
-  int X,Y,permissao,id;
-  char tecla;
+  int X,Y,permissao,id,tecla;
   char nome[30];
 }data;
 
 
-char str[30];
+char str[30] = {"192.168.15.161"};
 bool sair = false;
 bool concluido = false;
-
-ALLEGRO_BITMAP *fundo = NULL;
-ALLEGRO_BITMAP *imagem1 = NULL;
-ALLEGRO_BITMAP *imagem2 = NULL;
-ALLEGRO_BITMAP *inicio = NULL;
-ALLEGRO_DISPLAY *janela = NULL;
-ALLEGRO_FONT *fonte = NULL;
-ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
-
 // matriz marcao é a matriz onde é salva a posição de todos os jogadores.
 // map é o mapa que é copiado para a matriz tela para mostrar no terminal.
-char marcao [ALTURA_TELA] [LARGURA_TELA] ,map [ALTURA_TELA] [LARGURA_TELA], tela [ALTURA_TELA] [LARGURA_TELA];
+char marcao [ALTURA_TELA] [LARGURA_TELA] ,map [ALTURA_TELA] [LARGURA_TELA];
 data dados;
 // posição inicial dos outros playes, pode ser qualquer valor pois eles vão ser enviados para matriz marcão e serão
 // apagados como xAnterior e yAnterior.
@@ -46,6 +36,18 @@ int id,xA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1},yA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1};
 int x;
 int y;
 char res[2]={32,'\0'};
+bool pedir_nome = false;
+
+
+ALLEGRO_BITMAP *fundo = NULL;
+ALLEGRO_BITMAP *imagem1 = NULL;
+ALLEGRO_BITMAP *imagem2 = NULL;
+ALLEGRO_BITMAP *peixe1 = NULL;
+ALLEGRO_BITMAP *personagem_1 = NULL;
+ALLEGRO_DISPLAY *janela = NULL;
+ALLEGRO_FONT *fonte = NULL;
+ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
+
 // os personagens são colocados de arcordo com o seu id.
 char pers[13] = {'X','Y','Z','J','D','L','U','I','S','F','E','P','M'};
 // monta as matrizes de mapa que é copiada para tela. A marcação recebe espaços vazios.
@@ -76,23 +78,17 @@ int main() {
     
     dados.X=x;
     dados.Y=y;
-    telaInicial();
-    finalizar();
-    return 0;  
-    while(1) {
+    telaInicial(); 
+      
+    while(!sair) {
         // roda game.
-        //runGame();
+        runGame();
+        
         printf("Server disconnected! Want to try again? [Y/N] ");
         int ress;
-        while (ress = tolower(getchar()), ress != 'n' && ress != 'y' && ress != '\n'){
-          puts("anh???");
-        }
-        if (ress == 'y' || ress == '\n') {
-          assertConnection();
-        } else {
-          break;
-        }
+        
     }
+    finalizar();
     return 0;
 }
 
@@ -103,7 +99,6 @@ void monta () {
 
         for( j_des = 0 ; j_des < LARGURA_TELA ; j_des++ ){
             map[i_des] [j_des] =32;
-            tela[i_des] [j_des] =32;
             marcao [i_des] [j_des] =32;
         }
 
@@ -113,7 +108,6 @@ void monta () {
 
         for( j_des = 10 ; j_des < 15 ; j_des++ ){
             map[i_des] [j_des] ='l';
-            tela[i_des] [j_des] ='l';
         }
 
     }
@@ -121,7 +115,6 @@ void monta () {
 
         for( j_des = 10 ; j_des < 15 ; j_des++ ){
             map[i_des] [j_des] ='l';
-            tela[i_des] [j_des] ='l';
         }
 
     }
@@ -130,7 +123,6 @@ void monta () {
 
         for( j_des = 25 ; j_des < 30 ; j_des++ ){
             map[i_des] [j_des] ='l';
-            tela[i_des] [j_des] ='l';
         }
 
     }
@@ -149,66 +141,62 @@ void GeraPosicao(){
     do{
         
             srand((unsigned)time(NULL));
-            x=rand()%41-1;  
-            y=rand()%21-1;
+            x=rand()%480;  
+            y=rand()%480;
         
-    } while ( map [y] [x] == 'l');
+    } while ( x < 10 || y < 10);
     
 }
 // faz uma cópia da matriz map na matriz tela e depois verifica em que posições na matriz macação estão
 // os jogadores. 
 void mostraTela(){
     int i,j;
-
-    for(i=0;i<20;i++){
-        for(j=0;j<40;j++){
-            tela[i] [j] = map  [i] [j];
-        }
-    }
-    for(i=0;i<20;i++){
-        for(j=0;j<40;j++){
+    al_draw_bitmap(fundo,0,0,0);
+    for(i=0;i<ALTURA_TELA;i++){
+        for(j=0;j<LARGURA_TELA;j++){
             if(marcao[i] [j] != 32){
-                tela[i] [j] = marcao[i] [j];
+                personagem_1 = al_create_sub_bitmap(peixe1, 53, 11, 35,30);
+                
+                al_draw_bitmap(personagem_1, j,i,0);
             }
         }
     }
-    // limpa terminal linux
-    system("clear");
-
-    for(i=0;i<20;i++){
-        printf(" |");
-        for(j=0;j<40;j++){
-            printf("%c",tela[i] [j]);
-        }
-        printf("|\n");
-    }
+    al_flip_display();
 }
 
-enum conn_ret_t tryConnect() {
-  //printf("Please enter the server IP: ");
-  return connectToServer(str);
-}
+
 // tenta se conectar ao servidor.
 
 void runGame() {
     char ch;
     ch='l';
+    printf("%d %d\n",x,y );
     marcaPosicao(0,0,x,y,pers[id]);
     mostraTela();
+    
+
+    
     while (1) {
         // se alguma tecla for pressionada e for diferente de 'l', envia posição, id e tecla.
-        ch=getch();
-        if(ch!='l'){
-            dados.tecla = ch;
-            dados.id=id;
-            dados.X=x;
-            dados.Y=y;
-            sendMsgToServer((void *)&dados,sizeof(data));
-            ch='l';
+        while (!al_is_event_queue_empty(fila_eventos)){
+            
+            ALLEGRO_EVENT evento;
+            al_wait_for_event(fila_eventos, &evento);
+            if (evento.type == ALLEGRO_EVENT_KEY_DOWN){
+                    dados.tecla = (char)evento.keyboard.keycode;
+                    //printf("%d\n",dados.tecla );
+                    dados.id=id;
+                    dados.X=x;
+                    dados.Y=y;
+                    sendMsgToServer((void *)&dados,sizeof(data));
+                
+            }         
+            else if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+            sair = true; 
+            return;
+            }
         }
-
         // receber mensagem do servidor
-    
         int ret = recvMsgFromServer(&dados,DONT_WAIT);
         // se receber server diconect, acaba com a função
         if (ret == SERVER_DISCONNECTED) {
@@ -216,7 +204,7 @@ void runGame() {
         } 
         // se houver mensagem, ler os dados:
         else if (ret != NO_MESSAGE) {
-            printf("per %d id %d \n", dados.permissao,dados.id);
+            //printf("per %d id %d \n", dados.permissao,dados.id);
              // se a permição para o pedido enviado for igual a 1, o client executa o que pediu para fazer.
              if(dados.permissao == 1 && id == dados.id){
                  marcaPosicao(x,y,dados.X,dados.Y,pers[id]);
@@ -232,7 +220,7 @@ void runGame() {
                 yA[dados.id]=dados.Y;
 
             }
-        }
+        }    
     }
 }
 int maximo(int h){
@@ -245,45 +233,13 @@ int maximo(int h){
     return h;
 
 }
-bool assertConnection() {
-    int i;
-    enum conn_ret_t ans = tryConnect();
-    // ans recebe retorno da função tryCone..
-   
-    // enquanto o server não se conectar
-    
-        
-        exibir_texto_centralizado("Want to try again? [Y/n] ",290,450);
-        int res;
-        while (res = tolower(getchar()), res != 'n' && res != 'y' && res != '\n'){
-            exibir_texto_centralizado("anh???",290,450);
-            al_flip_display();
-            for(i=0;i<1000000;i++); 
-        }
-        if (res == 'n') {
-            exit(EXIT_SUCCESS);
-            return false;
-        }
-        ans = tryConnect();
-    
-    // se conectar, pede nome, salva nome na struct de mensagem e manda para o server.
-    if(ans == SERVER_UP){
-        return 1;
-
-        /*printf("Nome\n");
-        scanf(" %[^\n]",dados.nome);
-        sendMsgToServer((void *)&dados,sizeof(data));
-
-        // espera mensagem do servidor. O servidor é quem vai definir o id desse client, ele precisa desse ip para se identificar.
-        recvMsgFromServer(&dados,WAIT_FOR_IT);
-        // salva id recebido.
-        id=dados.id;
-        printf("%d\n",id );      
-        */
-    }
-}
+//enum conn_ret_t tryConnect() {
+  //printf("Please enter the server IP: ");
+//  return connectToServer(str);
+//}
+/*
 int conecta(){
-  enum conn_ret_t ans = tryConnect();
+  
 
   if(ans==SERVER_UP)
     return 1;
@@ -294,9 +250,9 @@ int conecta(){
   else if(ans == SERVER_CLOSED)
     return 4;
   else 
-    return 0;
+    return 0;s
 }
-
+*/
 void telaInicial(){
    
     int i;
@@ -312,14 +268,58 @@ void telaInicial(){
             if (!concluido){
                 manipular_entrada(evento);
                  
-                 al_flip_display();
+                al_flip_display();
                 if (evento.type == ALLEGRO_EVENT_KEY_DOWN && evento.keyboard.keycode == ALLEGRO_KEY_ENTER){
-                    //mensagens possíveis
-                    if(conecta() == 1){
+                    
+                    enum conn_ret_t ans = connectToServer(str);
+
+                    if(ans == SERVER_UP){
+                            strcpy(str,"");
+
+                            while(!pedir_nome){
+                                while (!al_is_event_queue_empty(fila_eventos)){
+                                
+                                            ALLEGRO_EVENT evento;
+                                            al_wait_for_event(fila_eventos, &evento);
+                                 
+                                            if (!pedir_nome){
+                                                manipular_entrada(evento);
+                                                
+                                                if (evento.type == ALLEGRO_EVENT_KEY_DOWN && evento.keyboard.keycode == ALLEGRO_KEY_ENTER){
+                                                    strcpy(dados.nome,str);
+                                                    sendMsgToServer((void *)&dados,sizeof(data));
+                                                    // espera mensagem do servidor. O servidor é quem vai definir o id desse client, ele precisa desse ip para se identificar.
+                                                    recvMsgFromServer(&dados,WAIT_FOR_IT);
+                                                    // salva id recebido.
+                                                    id=dados.id;
+                                                    pedir_nome = true;
+                                                }
+                                                
+
+                                            }
+                                                                                          
+                                            if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+                                                concluido = true;
+                                                pedir_nome - true;
+                                                sair = true; 
+                                            }
+                                }
+
+                                if(!pedir_nome){
+                                    al_draw_bitmap(imagem1, 0, 0, 0);
+                                    al_draw_text(fonte, al_map_rgb(0,0,0), 180- al_get_font_ascent(fonte),
+                                    (580 - al_get_font_ascent(fonte)) / 2,
+                                    ALLEGRO_ALIGN_CENTRE + al_get_font_ascent(fonte), str);
+                                    al_draw_bitmap(imagem2, 0, 0, 0);
+                                    exibir_texto_centralizado("Nome",290,450);
+                                    al_flip_display();
+                                }
+                            }
+                        
                       concluido=true;
                       //pede nome.
                     }
-                    else if (conecta() == 2) {
+                    else if (ans == SERVER_DOWN) {
                         al_draw_bitmap(imagem1, 0, 0, 0);
                         al_draw_bitmap(imagem2, 0, 0, 0);
                         exibir_texto_centralizado("Server is down!",180 ,450);
@@ -327,7 +327,7 @@ void telaInicial(){
                         strcpy(str,"");
                         for(i=0;i<100000000;i++);    
                     } 
-                    else if (conecta()==3) {
+                    else if (ans==SERVER_FULL) {
                       al_draw_bitmap(imagem1, 0, 0, 0);
                       al_draw_bitmap(imagem2, 0, 0, 0);
                       exibir_texto_centralizado("Server is full!",290,450);
@@ -335,7 +335,7 @@ void telaInicial(){
                       strcpy(str,"");
                       for(i=0;i<100000000;i++);  
                     } 
-                    else if (conecta()==4) {
+                    else if (ans==SERVER_CLOSED) {
                       al_draw_bitmap(imagem1, 0, 0, 0);
                       al_draw_bitmap(imagem2, 0, 0, 0);
                       exibir_texto_centralizado("Server is closed for new connections!", 290,450);
@@ -343,7 +343,7 @@ void telaInicial(){
                       strcpy(str,"");
                       for(i=0;i<100000000;i++);  
                     } 
-                    else if (conecta() == 0) {
+                    else {
                       al_draw_bitmap(imagem1, 0, 0, 0);
                       al_draw_bitmap(imagem2, 0, 0, 0);
                       exibir_texto_centralizado("Server didn't respond to connection!",290,450);
@@ -351,7 +351,7 @@ void telaInicial(){
                       strcpy(str,"");
                       for(i=0;i<100000000;i++); 
                     }
-                    if(conecta()!=1){
+                    if(ans!=SERVER_UP){
                       strcpy(str,"");
                     }
                 }
@@ -359,7 +359,8 @@ void telaInicial(){
             
             if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
                 concluido = true;
-                sair = true; 
+                sair = true;
+                return; 
             }
         }
         if(!concluido){
@@ -462,7 +463,11 @@ bool carregar_arquivos(){
         fprintf(stderr, "Falha ao carregar \"dente.png\".\n");
         return false;
     }
-
+    peixe1 = al_load_bitmap ("examples/AllegroAquar/Resources/Tilesets/peixe1.png");
+    if(!peixe1){
+        fprintf(stderr, "Falha ao carregar \"peixe1.png\". \n");
+        return false;
+    }
     fonte = al_load_font("examples/AllegroAquar/Resources/Fonts/Ubuntu-R.ttf", 42, 0);
     
     if (!fonte){
