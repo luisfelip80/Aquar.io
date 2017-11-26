@@ -17,44 +17,53 @@
 #define LARGURA_TELA 640
 #define ALTURA_TELA 480
 
+
+ALLEGRO_BITMAP *fundo = NULL;
+ALLEGRO_BITMAP *imagem1 = NULL;
+ALLEGRO_BITMAP *imagem2 = NULL;
+ALLEGRO_BITMAP *peixe1 = NULL;
+ALLEGRO_BITMAP *peixe2 = NULL;
+ALLEGRO_BITMAP *peixe3 = NULL;
+ALLEGRO_BITMAP *peixe4 = NULL;
+ALLEGRO_BITMAP *personagem_1 = NULL;
+ALLEGRO_BITMAP *personagem_2 = NULL;
+ALLEGRO_BITMAP *personagem_3 = NULL;
+ALLEGRO_BITMAP *personagem_4 = NULL;
+ALLEGRO_DISPLAY *janela = NULL;
+ALLEGRO_FONT *fonte = NULL;
+ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
+
+
 typedef struct {
-  int X,Y,permissao,id,tecla;
-  char nome[30];
+  int X,Y,permissao,id,tecla,pers,tamanho,xb,yb;
+  char nome[30],direcao;
 }data;
 
 
-char str[30] = {"192.168.15.161"};
+char str[30] = {"192.168.15.166"};
 bool sair = false;
 bool concluido = false;
+int bx=1,by=0;
+int ant_dir [6] ={0,0,0,0,0,0};
 // matriz marcao é a matriz onde é salva a posição de todos os jogadores.
 // map é o mapa que é copiado para a matriz tela para mostrar no terminal.
 char marcao [ALTURA_TELA] [LARGURA_TELA] ,map [ALTURA_TELA] [LARGURA_TELA];
 data dados;
 // posição inicial dos outros playes, pode ser qualquer valor pois eles vão ser enviados para matriz marcão e serão
 // apagados como xAnterior e yAnterior.
-int id,xA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1},yA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1};
-int x;
-int y;
+int id,Peixe_eu=1;
+int xA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1},yA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1};
+int x,y,indicador_X_Bit=0,indicador_Y_Bit=0;
+int x_bit[2][5] = {{0,160,320,480,640},{1440,1280,1120,960,800}},y_bit[5] = {0,129,260,391,522};
 char res[2]={32,'\0'};
-bool pedir_nome = false;
-
-
-ALLEGRO_BITMAP *fundo = NULL;
-ALLEGRO_BITMAP *imagem1 = NULL;
-ALLEGRO_BITMAP *imagem2 = NULL;
-ALLEGRO_BITMAP *peixe1 = NULL;
-ALLEGRO_BITMAP *personagem_1 = NULL;
-ALLEGRO_DISPLAY *janela = NULL;
-ALLEGRO_FONT *fonte = NULL;
-ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
-
+bool pedir_nome = false,right=true,left=false;
 // os personagens são colocados de arcordo com o seu id.
-char pers[13] = {'X','Y','Z','J','D','L','U','I','S','F','E','P','M'};
+char pers[2][4] = {{'L','U','I','S'},{'P','E','R','A'}};
 // monta as matrizes de mapa que é copiada para tela. A marcação recebe espaços vazios.
 void monta ();
 void GeraPosicao();
 void mostraTela();
-void marcaPosicao(int xx, int yy, int px,int py, char personagem);
+void marcaPosicao(int xx, int yy, int px,int py, int personagem, int dir);
 enum conn_ret_t tryConnect();
 bool assertConnection();
 void runGame();
@@ -131,8 +140,9 @@ void monta () {
 }
 
 // recebe a posição anterior para apagar e, a próxima "px" e "py" para marcar o personagem.  
-void marcaPosicao(int xx, int yy, int px,int py, char personagem){
-    marcao[py] [px] = personagem;
+void marcaPosicao(int xx, int yy, int px,int py, int personagem, int dir){
+    
+    marcao[py] [px] = pers[dir][personagem];
     marcao[yy] [xx] = 32;
 }
 // Gera posicao aleatória para começo do jogo.
@@ -149,15 +159,43 @@ void GeraPosicao(){
 }
 // faz uma cópia da matriz map na matriz tela e depois verifica em que posições na matriz macação estão
 // os jogadores. 
-void mostraTela(){
+void mostraTela(int primeiro_X,int tamanho_peixe){
     int i,j;
     al_draw_bitmap(fundo,0,0,0);
     for(i=0;i<ALTURA_TELA;i++){
         for(j=0;j<LARGURA_TELA;j++){
-            if(marcao[i] [j] != 32){
-                personagem_1 = al_create_sub_bitmap(peixe1, 53, 11, 35,30);
-                
+
+            if(marcao[i] [j] == 'L'){
+                personagem_1 = al_create_sub_bitmap(peixe1, x_bit [0][primeiro_X], y_bit[tamanho_peixe], 160,131);
                 al_draw_bitmap(personagem_1, j,i,0);
+            }
+            else if(marcao[i] [j] == 'P'){
+                personagem_1 = al_create_sub_bitmap(peixe1, x_bit [1][primeiro_X], y_bit[tamanho_peixe], 160,131);
+                al_draw_bitmap(personagem_1, j,i,0);
+            }
+            else if(marcao[i] [j] == 'U'){
+                personagem_2 = al_create_sub_bitmap(peixe2, x_bit [0][primeiro_X], y_bit[tamanho_peixe], 160,131);
+                al_draw_bitmap(personagem_2, j,i,0);
+            }
+            else if(marcao[i] [j] == 'E'){
+                personagem_2 = al_create_sub_bitmap(peixe2, x_bit [1][primeiro_X], y_bit[tamanho_peixe], 160,131);
+                al_draw_bitmap(personagem_2, j,i,0);
+            }
+            else if(marcao[i] [j] == 'I'){
+                personagem_3 = al_create_sub_bitmap(peixe3, x_bit [0][primeiro_X], y_bit[tamanho_peixe], 160,131);
+                al_draw_bitmap(personagem_3, j,i,0);
+            }
+            else if(marcao[i] [j] == 'R'){
+                personagem_3 = al_create_sub_bitmap(peixe3, x_bit [1][primeiro_X], y_bit[tamanho_peixe], 160,131);
+                al_draw_bitmap(personagem_3, j,i,0);
+            }
+            else if(marcao[i] [j] == 'S'){
+                personagem_4 = al_create_sub_bitmap(peixe4, x_bit [0][primeiro_X], y_bit[tamanho_peixe], 160,131);
+                al_draw_bitmap(personagem_4, j,i,0);
+            }
+            else if(marcao[i] [j] == 'A'){
+                personagem_4 = al_create_sub_bitmap(peixe4, x_bit [1][primeiro_X], y_bit[tamanho_peixe], 160,131);
+                al_draw_bitmap(personagem_4, j,i,0);
             }
         }
     }
@@ -171,23 +209,22 @@ void runGame() {
     char ch;
     ch='l';
     printf("%d %d\n",x,y );
-    marcaPosicao(0,0,x,y,pers[id]);
-    mostraTela();
-    
+    marcaPosicao(0,0,x,y,Peixe_eu,0);
+    mostraTela(0,0);
 
-    
     while (1) {
         // se alguma tecla for pressionada e for diferente de 'l', envia posição, id e tecla.
         while (!al_is_event_queue_empty(fila_eventos)){
             
             ALLEGRO_EVENT evento;
-            al_wait_for_event(fila_eventos, &evento);
+            al_get_next_event(fila_eventos, &evento);
             if (evento.type == ALLEGRO_EVENT_KEY_DOWN){
-                    dados.tecla = (char)evento.keyboard.keycode;
+                    dados.tecla = evento.keyboard.keycode;
                     //printf("%d\n",dados.tecla );
                     dados.id=id;
                     dados.X=x;
                     dados.Y=y;
+                    dados.pers=Peixe_eu;
                     sendMsgToServer((void *)&dados,sizeof(data));
                 
             }         
@@ -195,6 +232,7 @@ void runGame() {
             sair = true; 
             return;
             }
+            //mostraTela(x_bit[bx],y_bit[by]);
         }
         // receber mensagem do servidor
         int ret = recvMsgFromServer(&dados,DONT_WAIT);
@@ -207,20 +245,46 @@ void runGame() {
             //printf("per %d id %d \n", dados.permissao,dados.id);
              // se a permição para o pedido enviado for igual a 1, o client executa o que pediu para fazer.
              if(dados.permissao == 1 && id == dados.id){
-                 marcaPosicao(x,y,dados.X,dados.Y,pers[id]);
-                 mostraTela();
+                
+                if(dados.tecla==83){
+                    marcaPosicao(x,y,dados.X,dados.Y,Peixe_eu,0);
+                    ant_dir[dados.id]=0;
+                }
+                else if(dados.tecla==82){
+                    marcaPosicao(x,y,dados.X,dados.Y,Peixe_eu,1);
+                    ant_dir[dados.id]=1;
+                }
+                else {
+                    marcaPosicao(x,y,dados.X,dados.Y,Peixe_eu,ant_dir[dados.id]);
+                }
                  x=dados.X;
                  y=dados.Y;
+                 
             }
             // se receber mensagem do server, mas o id não for o seu, mostra essa posição como sendo outro jogador.
-            if(dados.permissao == 1 && id != dados.id){
-                marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,pers[dados.id]);
-                mostraTela();
+            if(dados.permissao == 1 && id != dados.id && dados.id != 7){
+                if(dados.tecla==83){
+                    marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,0);
+                    ant_dir[dados.id]=0;
+                }
+                else if(dados.tecla==82){
+                    marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,1);
+                    ant_dir[dados.id]=1;
+                }
+                else {
+                    marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,ant_dir[dados.id]);
+                }
+
                 xA[dados.id]=dados.X;
                 yA[dados.id]=dados.Y;
-
+                
             }
-        }    
+            if(dados.id==7){
+                bx=dados.xb;
+                by=dados.tamanho;
+            }
+        }
+        mostraTela(bx,by);
     }
 }
 int maximo(int h){
@@ -468,6 +532,23 @@ bool carregar_arquivos(){
         fprintf(stderr, "Falha ao carregar \"peixe1.png\". \n");
         return false;
     }
+    peixe2 = al_load_bitmap ("examples/AllegroAquar/Resources/Tilesets/peixe2.png");
+    if(!peixe1){
+        fprintf(stderr, "Falha ao carregar \"peixe2.png\". \n");
+        return false;
+    }
+    /*
+    peixe3 = al_load_bitmap ("examples/AllegroAquar/Resources/Tilesets/peixe3.png");
+    if(!peixe3){
+        fprintf(stderr, "Falha ao carregar \"peixe3.png\". \n");
+        return false;
+    }
+    peixe4 = al_load_bitmap ("examples/AllegroAquar/Resources/Tilesets/peixe4.png");
+    if(!peixe1){
+        fprintf(stderr, "Falha ao carregar \"peixe4.png\". \n");
+        return false;
+    }
+    */
     fonte = al_load_font("examples/AllegroAquar/Resources/Fonts/Ubuntu-R.ttf", 42, 0);
     
     if (!fonte){
