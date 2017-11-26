@@ -11,12 +11,13 @@
 #define ALTURA_TELA 480
 
 typedef struct {
-      int X,Y,permissao,id,tecla,pers,tamanho,xb,yb,fome,direcao;
+      int X,Y,permissao,id,tecla,pers,tamanho,xb,yb,fome,direcao,x_aux,y_aux;
       char nome[30];
 }data;
 data dados;
 int clock_a,c2;
 int x,y;
+int tamanho[6] = {0,0,0,0,0,0};
 int bx=1,by=0;
 char map [ALTURA_TELA] [LARGURA_TELA],marcao [ALTURA_TELA] [LARGURA_TELA];
 data dados;
@@ -36,34 +37,9 @@ void monta () {
         }
 
     }
-    /*
-    for( i_des = 5 ; i_des < 10 ; i_des++ ){
-
-        for( j_des = 10 ; j_des < 15 ; j_des++ ){
-            map[i_des] [j_des] ='l';
-            tela[i_des] [j_des] ='l';
-        }
-
-    }
-    for( i_des = 13 ; i_des < 18 ; i_des++ ){
-
-        for( j_des = 10 ; j_des < 15 ; j_des++ ){
-            map[i_des] [j_des] ='l';
-            tela[i_des] [j_des] ='l';
-        }
-
-    }
-
-    for( i_des = 8 ; i_des < 15 ; i_des++ ){
-
-        for( j_des = 25 ; j_des < 30 ; j_des++ ){
-            map[i_des] [j_des] ='l';
-            tela[i_des] [j_des] ='l';
-        }
-
-    }
-*/
-
+    map[40] [530] ='l';
+    map[420] [240] ='l';
+    map[310] [120] ='l';
 }
 void GeraPosicao(){
 
@@ -83,7 +59,7 @@ void marcaPosicao(int xx, int yy, int px,int py, char personagem){
 }
 
 int main() {
-    int t;
+    int t,i,j;
     char client_names[MAX_CHAT_CLIENTS][LOGIN_MAX_SIZE];
     char str_buffer[BUFFER_SIZE];
     data dados_aux;
@@ -118,6 +94,7 @@ int main() {
                     dados.X = dados_aux.X;
                     dados.tecla= dados_aux.tecla;
                     dados.pers=dados_aux.pers;
+                    dados.tamanho = tamanho [dados_aux.id];
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.id = dados_aux.id;
                     dados.permissao=1;
@@ -136,6 +113,7 @@ int main() {
                     dados.id = dados_aux.id;
                     dados.tecla= dados_aux.tecla;
                     dados.pers=dados_aux.pers;
+                    dados.tamanho = tamanho [dados_aux.id];
                     //printf("x %d y %d\n", dados.X, dados.Y );
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.permissao=1;
@@ -153,6 +131,7 @@ int main() {
                     dados.id = dados_aux.id;
                     dados.tecla= dados_aux.tecla;
                     dados.pers=dados_aux.pers;
+                    dados.tamanho = tamanho [dados_aux.id];
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.permissao=1;
                     broadcast(&dados, sizeof(data));    
@@ -169,6 +148,7 @@ int main() {
                     dados.id = dados_aux.id;
                     dados.tecla= dados_aux.tecla;
                     dados.pers=dados_aux.pers;
+                    dados.tamanho = tamanho [dados_aux.id];
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.permissao=1;
                     broadcast(&dados, sizeof(data));    
@@ -179,61 +159,87 @@ int main() {
                 }
             }
             else if (dados_aux.tecla== 23){
-               if(dados.direcao==1){//right
-                    if(dados_aux.X-10 >=10){
-                        dados.X= dados_aux.X-10;
-                        dados.Y = dados_aux.Y;
-                        dados.id = dados_aux.id;
-                        dados.tecla= dados_aux.tecla;
-                        dados.pers=dados_aux.pers;
-                        dados.direcao=dados_aux.direcao;
-                        int h;
-                        int k;
-                        for(k=1;k<10;k++){
-                            for(h=1;h<=10;h++){
-                                if(map[dados_aux.Y+k] [dados_aux.X-h]=='r'){
-                                    map[dados_aux.X][dados_aux.Y]=32;
-                                    dados.fome = dados_aux.fome+1;
-                                }
-                                else if(map[dados_aux.Y+k] [dados_aux.X-h]=='l' && dados_aux.fome > 10){
-                                    map[dados_aux.X][dados_aux.Y]=32;
-                                    dados.fome = dados_aux.fome+7;
-                                }
-                            }
-                        }
-                        dados.permissao=1;
-                        broadcast(&dados, sizeof(data));
-                    }    
-                }
-                else if(dados.direcao==0){//right
-                    if(dados_aux.X+10 <LARGURA_TELA-10){
-                        dados.X= dados_aux.X+10;
-                        dados.Y = dados_aux.Y;
-                        dados.id = dados_aux.id;
-                        dados.tecla= dados_aux.tecla;
-                        dados.pers=dados_aux.pers;
-                        dados.direcao=dados_aux.direcao;
-                        
-                        int h;
-                        int k;
-                        for(k=1;k<=10;k++){
-                            for(h=1;h<=10;h++){
-                                if(map[dados_aux.Y+k] [dados_aux.X+h]=='r'){
-                                    map[dados_aux.X][dados_aux.Y]=32;
-                                    dados.fome = dados_aux.fome+1;
-                                }
-                                else if(map[dados_aux.Y+k] [dados_aux.X+h]=='l' && dados_aux.fome > 10){
-                                    map[dados_aux.X][dados_aux.Y]=32;
-                                    dados.fome = dados_aux.fome+7;
-                                }
-                            }
-                        }
-                        dados.permissao=1;
-                        broadcast(&dados, sizeof(data));
-                    }    
-                }
-            }
 
+               if(dados_aux.direcao ==0 && dados_aux.X+10 < LARGURA_TELA-10){
+                    
+                    dados.X= dados_aux.X+10;
+                    dados.Y = dados_aux.Y;
+                    dados.id = dados_aux.id;
+                    dados.tecla = dados_aux.tecla;
+                    dados.pers = dados_aux.pers;
+                    dados.direcao = dados_aux.direcao;
+                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
+                    dados.permissao=1;
+                    for(i=1;i<10+(dados_aux.tamanho*5);i++){
+                        for(j=1;j<=5*(dados_aux.tamanho+1);j++){
+                            if(map[dados_aux.Y+i] [dados_aux.X+j]=='r'){
+                                map[dados_aux.Y+i] [dados_aux.X+j]=32;
+                                dados.fome = dados_aux.fome+1;
+                                dados.x_aux = dados_aux.X+j;
+                                dados.y_aux = dados_aux.Y+i;
+                            }
+                            else if(map[dados_aux.Y-i] [dados_aux.X+j]=='r'){
+                                map[dados_aux.Y-i] [dados_aux.X+j]=32;
+                                dados.fome = dados_aux.fome+1;
+                                dados.x_aux = dados_aux.X+j;
+                                dados.y_aux = dados_aux.Y-i;
+                            }
+                            else if ( map[dados_aux.Y+i] [dados_aux.X+j] == 'l' && dados_aux.fome > 20){
+                                map[dados_aux.Y+i] [dados_aux.X+j]=32;
+                                dados.fome=dados_aux.fome+5;
+                                dados.x_aux=dados_aux.X+j;
+                                dados.y_aux=dados_aux.Y+i;
+                            }
+                        }
+                    }   
+                }
+                else if(dados_aux.direcao ==1 && dados_aux.X-10 >= 10 ){
+                    dados.X= dados_aux.X-10;
+                    dados.Y = dados_aux.Y;
+                    dados.id = dados_aux.id;
+                    dados.tecla = dados_aux.tecla;
+                    dados.pers = dados_aux.pers;
+                    dados.direcao = dados_aux.direcao;
+                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
+                    dados.permissao=1;
+                    for(i=1;i<10+(dados_aux.tamanho*5);i++){
+                        for(j=1;j<=5*(dados_aux.tamanho+1);j++){
+                            if(map[dados_aux.Y+i] [dados_aux.X-j]=='r'){
+                                map[dados_aux.Y+i] [dados_aux.X-j]=32;
+                                dados.fome = dados_aux.fome+1;
+                                dados.x_aux=dados_aux.X-j;
+                                dados.y_aux=dados_aux.Y+i;
+                            }
+                            else if(map[dados_aux.Y-i] [dados_aux.X-j]=='r'){
+                                map[dados_aux.Y-i] [dados_aux.X-j]=32;
+                                dados.fome = dados_aux.fome+1;
+                                dados.x_aux = dados_aux.X-j;
+                                dados.y_aux = dados_aux.Y-i;
+                            }
+                            else if (map[dados_aux.Y+i] [dados_aux.X-j]=='l' && dados_aux.tamanho > 1){
+                                map[dados_aux.Y+i] [dados_aux.X-j]=32;
+                                dados.fome = dados_aux.fome+5;
+                                dados.x_aux=dados_aux.X-j;
+                                dados.y_aux=dados_aux.Y+i;
+                            }
+                        }
+                    }   
+                }
+                if(dados_aux.fome > 30 && dados_aux.fome <= 50){
+                    tamanho[dados_aux.id]=1;
+                }
+                else if(dados_aux.fome > 50 && dados_aux.fome <= 100){
+                    tamanho[dados_aux.id]=2;
+                }
+                else if(dados_aux.fome > 100 && dados_aux.fome <= 150){
+                    tamanho[dados_aux.id]=3;
+                }
+                else if(dados_aux.fome > 150 && dados_aux.fome <= 200){
+                    tamanho[dados_aux.id]=4;
+                }
+                dados.tamanho=tamanho[dados_aux.id];
+            broadcast(&dados, sizeof(data)); 
+            }
         } 
         else if (msg_ret.status == DISCONNECT_MSG) {
             sprintf(str_buffer, "%s disconnected", client_names[msg_ret.client_id]);
@@ -247,7 +253,6 @@ int main() {
                 bx=1;
             dados.id=7;
             dados.xb = bx;
-            dados.tamanho=0;
             GeraPosicao();
             dados.X=x;
             dados.Y=y;
