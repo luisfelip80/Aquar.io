@@ -1,6 +1,7 @@
 #include "server.h"
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #define MSG_MAX_SIZE 350
 #define BUFFER_SIZE (MSG_MAX_SIZE)
@@ -10,14 +11,17 @@
 #define ALTURA_TELA 480
 
 typedef struct {
-      int X,Y,permissao,id,tecla,pers,tamanho,xb,yb;
-      char nome[30],direcao;
+      int X,Y,permissao,id,tecla,pers,tamanho,xb,yb,fome,direcao;
+      char nome[30];
 }data;
 data dados;
-int clock,c2;
+int clock_a,c2;
+int x,y;
 int bx=1,by=0;
 char map [ALTURA_TELA] [LARGURA_TELA],marcao [ALTURA_TELA] [LARGURA_TELA];
 data dados;
+int posi_inic_x[6] = {10,110,210,310,410,510},posi_inic_y = 440;
+
 // os personagens são colocados de arcordo com o seu id.
 char pers[6] = {'L','U','I','S','F','E'};
 
@@ -61,6 +65,16 @@ void monta () {
 */
 
 }
+void GeraPosicao(){
+
+    do{
+            srand((unsigned)time(NULL));
+            y=rand()%470;
+            x=rand()%630;      
+    } while ( x < 10 || y <10);
+    
+
+}
 
 // recebe a posição anterior para apagar e, a próxima "px" e "py" para marcar o personagem.  
 void marcaPosicao(int xx, int yy, int px,int py, char personagem){
@@ -77,7 +91,7 @@ int main() {
     puts("Server is running!!");
     monta();
     while (1) {
-        clock++;
+        clock_a++;
         c2++;
         int id = acceptConnection();
 
@@ -96,6 +110,7 @@ int main() {
         struct msg_ret_t msg_ret = recvMsg(&dados_aux);
         //mensagem nova
         if (msg_ret.status == MESSAGE_OK) {
+
             if(dados_aux.tecla == 85){ // up
 
                 if(dados_aux.Y+10 < ALTURA_TELA-10 && map[dados_aux.Y+10] [dados_aux.X]!='l'){
@@ -113,7 +128,7 @@ int main() {
                     broadcast(&dados, sizeof(data));   
                 }
             }
-            if(dados_aux.tecla == 84){ // down
+            else if(dados_aux.tecla == 84){ // down
                 if(dados_aux.Y-10 >= 10 && map[dados_aux.Y-10] [dados_aux.X]!='l'){
                     dados.Y= dados_aux.Y-10;
                     //printf("x %d y %d\n", dados_aux.X, dados_aux.Y );
@@ -131,7 +146,7 @@ int main() {
                     broadcast(&dados, sizeof(data));   
                 }
             }
-            if(dados_aux.tecla == 83 ){ // left
+            else if(dados_aux.tecla == 83 ){ // left
                 if(dados_aux.X+10 < LARGURA_TELA-10 && map[dados_aux.Y] [dados_aux.X+10]!='l'){
                     dados.X= dados_aux.X+10;
                     dados.Y = dados_aux.Y;
@@ -147,7 +162,7 @@ int main() {
                     broadcast(&dados, sizeof(data));   
                 }
             }
-            if(dados_aux.tecla == 82){ // right
+            else if(dados_aux.tecla == 82){ // right
                 if(dados_aux.X-10 >=10 && map[dados_aux.Y] [dados_aux.X-10]!='l'){
                     dados.X= dados_aux.X-10;
                     dados.Y = dados_aux.Y;
@@ -163,21 +178,80 @@ int main() {
                     broadcast(&dados, sizeof(data));   
                 }
             }
+            else if (dados_aux.tecla== 23){
+               if(dados.direcao==1){//right
+                    if(dados_aux.X-10 >=10){
+                        dados.X= dados_aux.X-10;
+                        dados.Y = dados_aux.Y;
+                        dados.id = dados_aux.id;
+                        dados.tecla= dados_aux.tecla;
+                        dados.pers=dados_aux.pers;
+                        dados.direcao=dados_aux.direcao;
+                        int h;
+                        int k;
+                        for(k=1;k<10;k++){
+                            for(h=1;h<=10;h++){
+                                if(map[dados_aux.Y+k] [dados_aux.X-h]=='r'){
+                                    map[dados_aux.X][dados_aux.Y]=32;
+                                    dados.fome = dados_aux.fome+1;
+                                }
+                                else if(map[dados_aux.Y+k] [dados_aux.X-h]=='l' && dados_aux.fome > 10){
+                                    map[dados_aux.X][dados_aux.Y]=32;
+                                    dados.fome = dados_aux.fome+7;
+                                }
+                            }
+                        }
+                        dados.permissao=1;
+                        broadcast(&dados, sizeof(data));
+                    }    
+                }
+                else if(dados.direcao==0){//right
+                    if(dados_aux.X+10 <LARGURA_TELA-10){
+                        dados.X= dados_aux.X+10;
+                        dados.Y = dados_aux.Y;
+                        dados.id = dados_aux.id;
+                        dados.tecla= dados_aux.tecla;
+                        dados.pers=dados_aux.pers;
+                        dados.direcao=dados_aux.direcao;
+                        
+                        int h;
+                        int k;
+                        for(k=1;k<=10;k++){
+                            for(h=1;h<=10;h++){
+                                if(map[dados_aux.Y+k] [dados_aux.X+h]=='r'){
+                                    map[dados_aux.X][dados_aux.Y]=32;
+                                    dados.fome = dados_aux.fome+1;
+                                }
+                                else if(map[dados_aux.Y+k] [dados_aux.X+h]=='l' && dados_aux.fome > 10){
+                                    map[dados_aux.X][dados_aux.Y]=32;
+                                    dados.fome = dados_aux.fome+7;
+                                }
+                            }
+                        }
+                        dados.permissao=1;
+                        broadcast(&dados, sizeof(data));
+                    }    
+                }
+            }
+
         } 
         else if (msg_ret.status == DISCONNECT_MSG) {
             sprintf(str_buffer, "%s disconnected", client_names[msg_ret.client_id]);
             printf("%s disconnected, id = %d is free\n",client_names[msg_ret.client_id], msg_ret.client_id);
         }
-
-        if(clock == 350){
+        if(clock_a == 350){
             printf("ok\n"); 
-            clock=0;
+            clock_a=0;
             bx++;
             if(bx>=5)
                 bx=1;
             dados.id=7;
             dados.xb = bx;
-            dados.tamanho=1;
+            dados.tamanho=0;
+            GeraPosicao();
+            dados.X=x;
+            dados.Y=y;
+            map[y] [x] = 'r';
             broadcast(&dados,sizeof(data));
         }   
     }
