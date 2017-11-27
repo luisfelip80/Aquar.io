@@ -56,7 +56,7 @@ char marcao [ALTURA_TELA] [LARGURA_TELA] ,map [ALTURA_TELA] [LARGURA_TELA];
 data dados;
 // posição inicial dos outros playes, pode ser qualquer valor pois eles vão ser enviados para matriz marcão e serão
 // apagados como xAnterior e yAnterior.
-int id,Peixe_eu=1;
+int id,Peixe_eu=0;
 int xA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1},yA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1};
 int x,y,indicador_X_Bit=0,indicador_Y_Bit=0;
 int x_bit[2][5] = {{0,160,320,480,640},{1440,1280,1120,960,800}},y_bit[5] = {0,129,260,391,522};
@@ -284,7 +284,7 @@ void runGame() {
                  
             }
             // se receber mensagem do server, mas o id não for o seu, mostra essa posição como sendo outro jogador.
-            if(dados.permissao == 1 && id != dados.id && dados.id != 7){
+            if(dados.permissao == 1 && id != dados.id && dados.id != 6){
                 if(dados.tecla==83){
                     marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,0,0,dados.tamanho);
                     ant_dir[dados.id]=0;
@@ -305,7 +305,7 @@ void runGame() {
                 xA[dados.id]=dados.X;
                 yA[dados.id]=dados.Y;
             }
-            if(dados.id==7){
+            if(dados.id==6){
                 xi++;
                 bx=dados.xb;
                 map[dados.Y] [dados.X] = 'r';

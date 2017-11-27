@@ -225,16 +225,16 @@ int main() {
                         }
                     }   
                 }
-                if(dados_aux.fome > 30 && dados_aux.fome <= 50){
+                if(dados.fome > 30 && dados.fome <= 50){
                     tamanho[dados_aux.id]=1;
                 }
-                else if(dados_aux.fome > 50 && dados_aux.fome <= 100){
+                else if(dados.fome > 50 && dados.fome <= 100){
                     tamanho[dados_aux.id]=2;
                 }
-                else if(dados_aux.fome > 100 && dados_aux.fome <= 150){
+                else if(dados.fome > 100 && dados.fome <= 150){
                     tamanho[dados_aux.id]=3;
                 }
-                else if(dados_aux.fome > 150 && dados_aux.fome <= 200){
+                else if(dados.fome > 150 && dados.fome <= 200){
                     tamanho[dados_aux.id]=4;
                 }
                 dados.tamanho=tamanho[dados_aux.id];
@@ -251,7 +251,7 @@ int main() {
             bx++;
             if(bx>=5)
                 bx=1;
-            dados.id=7;
+            dados.id=6;
             dados.xb = bx;
             GeraPosicao();
             dados.X=x;
