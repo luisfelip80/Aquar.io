@@ -95,14 +95,14 @@ int main() {
     dados.Y=y;
     telaInicial(); 
       
-    while(!sair) {
+    //while(!sair) {
         // roda game.
         runGame();
         
-        printf("Server disconnected! Want to try again? [Y/N] ");
+        //printf("Server disconnected! Want to try again? [Y/N] ");
         int ress;
         
-    }
+    //}
     finalizar();
     return 0;
 }

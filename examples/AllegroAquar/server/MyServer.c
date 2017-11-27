@@ -17,6 +17,8 @@ typedef struct {
 data dados;
 int clock_a,c2;
 int x,y;
+int correcaoTamanho_X[5] = {7,24,38,50,62};
+int correcaoTamanho_Y[5] = {17,28,36,46,53};
 int tamanho[6] = {0,0,0,0,0,0};
 int bx=1,by=0;
 char map [ALTURA_TELA] [LARGURA_TELA],marcao [ALTURA_TELA] [LARGURA_TELA];
@@ -106,7 +108,7 @@ int main() {
                 }
             }
             else if(dados_aux.tecla == 84){ // down
-                if(dados_aux.Y-10 >= 10 && map[dados_aux.Y-10] [dados_aux.X]!='l'){
+                if(dados_aux.Y-10 >= correcaoTamanho_Y[dados_aux.tamanho] && map[dados_aux.Y-10] [dados_aux.X]!='l'){
                     dados.Y= dados_aux.Y-10;
                     //printf("x %d y %d\n", dados_aux.X, dados_aux.Y );
                     dados.X = dados_aux.X;
@@ -170,25 +172,19 @@ int main() {
                     dados.direcao = dados_aux.direcao;
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.permissao=1;
-                    for(i=1;i<10+(dados_aux.tamanho*5);i++){
-                        for(j=1;j<=5*(dados_aux.tamanho+1);j++){
-                            if(map[dados_aux.Y+i] [dados_aux.X+j]=='r'){
-                                map[dados_aux.Y+i] [dados_aux.X+j]=32;
-                                dados.fome = dados_aux.fome+1;
-                                dados.x_aux = dados_aux.X+j;
-                                dados.y_aux = dados_aux.Y+i;
-                            }
-                            else if(map[dados_aux.Y-i] [dados_aux.X+j]=='r'){
-                                map[dados_aux.Y-i] [dados_aux.X+j]=32;
+                    for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho];i++){
+                        for(j=1;j<=11;j++){
+                            if(map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='r'){
+                                map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
                                 dados.fome = dados_aux.fome+1;
                                 dados.x_aux = dados_aux.X+j;
                                 dados.y_aux = dados_aux.Y-i;
                             }
-                            else if ( map[dados_aux.Y+i] [dados_aux.X+j] == 'l' && dados_aux.fome > 20){
-                                map[dados_aux.Y+i] [dados_aux.X+j]=32;
-                                dados.fome=dados_aux.fome+5;
-                                dados.x_aux=dados_aux.X+j;
-                                dados.y_aux=dados_aux.Y+i;
+                            else if (map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='l' && dados_aux.tamanho > 1){
+                                map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
+                                dados.fome = dados_aux.fome+5;
+                                dados.x_aux=(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
+                                dados.y_aux=dados_aux.Y-i;
                             }
                         }
                     }   
@@ -202,25 +198,19 @@ int main() {
                     dados.direcao = dados_aux.direcao;
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.permissao=1;
-                    for(i=1;i<10+(dados_aux.tamanho*5);i++){
-                        for(j=1;j<=5*(dados_aux.tamanho+1);j++){
-                            if(map[dados_aux.Y+i] [dados_aux.X-j]=='r'){
-                                map[dados_aux.Y+i] [dados_aux.X-j]=32;
+                    for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho];i++){
+                        for(j=1;j<=11;j++){
+                            if(map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=='r'){
+                                map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=32;
                                 dados.fome = dados_aux.fome+1;
-                                dados.x_aux=dados_aux.X-j;
-                                dados.y_aux=dados_aux.Y+i;
-                            }
-                            else if(map[dados_aux.Y-i] [dados_aux.X-j]=='r'){
-                                map[dados_aux.Y-i] [dados_aux.X-j]=32;
-                                dados.fome = dados_aux.fome+1;
-                                dados.x_aux = dados_aux.X-j;
+                                dados.x_aux = (dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j;
                                 dados.y_aux = dados_aux.Y-i;
                             }
-                            else if (map[dados_aux.Y+i] [dados_aux.X-j]=='l' && dados_aux.tamanho > 1){
-                                map[dados_aux.Y+i] [dados_aux.X-j]=32;
+                            else if (map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=='l' && dados_aux.tamanho > 1){
+                                map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=32;
                                 dados.fome = dados_aux.fome+5;
-                                dados.x_aux=dados_aux.X-j;
-                                dados.y_aux=dados_aux.Y+i;
+                                dados.x_aux=(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j;
+                                dados.y_aux=dados_aux.Y-i;
                             }
                         }
                     }   
@@ -246,7 +236,7 @@ int main() {
             printf("%s disconnected, id = %d is free\n",client_names[msg_ret.client_id], msg_ret.client_id);
         }
         if(clock_a == 350){
-            printf("ok\n"); 
+            //printf("ok\n"); 
             clock_a=0;
             bx++;
             if(bx>=5)
