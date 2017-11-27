@@ -96,7 +96,7 @@ int main() {
                     dados.Y= dados_aux.Y+10;
                     dados.X = dados_aux.X;
                     dados.tecla= dados_aux.tecla;
-                    dados.fome=dados_aux.fome;
+                    dados.fome=fome[dados_aux.id];
                     dados.pers=dados_aux.pers;
                     dados.tamanho = tamanho [dados_aux.id];
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
@@ -115,7 +115,7 @@ int main() {
                     //printf("x %d y %d\n", dados_aux.X, dados_aux.Y );
                     dados.X = dados_aux.X;
                     dados.id = dados_aux.id;
-                    dados.fome=dados_aux.fome;
+                    dados.fome=fome[dados_aux.id];
                     dados.tecla= dados_aux.tecla;
                     dados.pers=dados_aux.pers;
                     dados.tamanho = tamanho [dados_aux.id];
@@ -134,9 +134,11 @@ int main() {
                     dados.X= dados_aux.X+10;
                     dados.Y = dados_aux.Y;
                     dados.id = dados_aux.id;
-                    dados.fome=dados_aux.fome;
+
+                    dados.fome=fome[dados_aux.id];
+                    
                     dados.tecla= dados_aux.tecla;
-                    dados.pers=dados_aux.pers;
+                    dados.pers = dados_aux.pers;
                     dados.tamanho = tamanho [dados_aux.id];
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.permissao=1;
@@ -153,7 +155,7 @@ int main() {
                     dados.Y = dados_aux.Y;
                     dados.id = dados_aux.id;
                     dados.tecla= dados_aux.tecla;
-                    dados.fome=dados_aux.fome;
+                    dados.fome=fome[dados_aux.id];
                     dados.pers=dados_aux.pers;
                     dados.tamanho = tamanho [dados_aux.id];
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
