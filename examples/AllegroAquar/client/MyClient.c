@@ -56,7 +56,7 @@ char marcao [ALTURA_TELA] [LARGURA_TELA] ,map [ALTURA_TELA] [LARGURA_TELA];
 data dados;
 // posição inicial dos outros playes, pode ser qualquer valor pois eles vão ser enviados para matriz marcão e serão
 // apagados como xAnterior e yAnterior.
-int id,Peixe_eu=0;
+int id,Peixe_eu=1;
 int xA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1},yA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1};
 int x,y,indicador_X_Bit=0,indicador_Y_Bit=0;
 int x_bit[2][5] = {{0,160,320,480,640},{1440,1280,1120,960,800}},y_bit[5] = {0,129,260,391,522};
@@ -386,6 +386,15 @@ void telaInicial(){
                                                     // salva id recebido.
                                                     id=dados.id;
                                                     pedir_nome = true;
+                                                    dados.tecla=83;
+                                                    dados.id=id;
+                                                    dados.X=x;
+                                                    dados.Y=y;
+                                                    dados.fome=fome;
+                                                    dados.tamanho=tamanho;
+                                                    dados.pers=Peixe_eu;
+                                                    dados.direcao=ant_dir[id];
+                                                    sendMsgToServer((void *)&dados,sizeof(data));
                                                 }
                                                 
 
