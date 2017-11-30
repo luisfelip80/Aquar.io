@@ -119,9 +119,9 @@ void monta () {
             matriz_tamanho [i] [j] = 0;
         }
     }
-    map[40] [530] ='i';
-    map[420] [240] ='i';
-    map[310] [120] ='i';
+    marcao[40] [530] ='i';
+    marcao[420] [240] ='i';
+    marcao[310] [120] ='i';
 }
 
 // recebe a posição anterior para apagar e, a próxima "px" e "py" para marcar o personagem.  
@@ -163,16 +163,16 @@ void mostraTela(int primeiro_X){
         for(j=0;j<LARGURA_TELA;j++){
 
             
-            if(map[i] [j] == 'i'){
-                isca_a = al_create_sub_bitmap(isca, x_bit_isca [xi],0, 77,76);
-                al_draw_bitmap(isca_a, j-38,i-37,0);
-            }
+            
 
             if(marcao[i] [j] == 'L'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [0][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-79,i-65,0);
             }
-            
+            else if(marcao[i] [j] == 'i'){
+                isca_a = al_create_sub_bitmap(isca, x_bit_isca [xi],0, 77,76);
+                al_draw_bitmap(isca_a, j-38,i-37,0);
+            }
             else if (marcao[i] [j] == 'r'){
                 al_draw_bitmap(racao, j-2,i-2,0);
             }

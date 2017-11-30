@@ -42,9 +42,9 @@ void monta () {
         }
 
     }
-    map[40] [530] ='l';
-    map[420] [240] ='l';
-    map[310] [120] ='l';
+    marcao[40] [530] ='l';
+    marcao[420] [240] ='l';
+    marcao[310] [120] ='l';
 }
 void GeraPosicao(){
 
