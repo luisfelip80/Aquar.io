@@ -14,6 +14,7 @@
 #define BUFFER_SIZE (MSG_MAX_SIZE + 100)
 #define LOGIN_MAX_SIZE 13
 #define HIST_MAX_SIZE 200
+
 #define LARGURA_TELA 640
 #define ALTURA_TELA 480
 
@@ -164,7 +165,9 @@ void mostraTela(int primeiro_X){
 
             
             
-
+            if (marcao[i] [j] == 'r'){
+                al_draw_bitmap(racao, j-2,i-2,0);
+            }
             if(marcao[i] [j] == 'L'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [0][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-79,i-65,0);
@@ -173,10 +176,6 @@ void mostraTela(int primeiro_X){
                 isca_a = al_create_sub_bitmap(isca, x_bit_isca [xi],0, 77,76);
                 al_draw_bitmap(isca_a, j-38,i-37,0);
             }
-            else if (marcao[i] [j] == 'r'){
-                al_draw_bitmap(racao, j-2,i-2,0);
-            }
-
             else if(marcao[i] [j] == 'l'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [1][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-79,i-65,0);
