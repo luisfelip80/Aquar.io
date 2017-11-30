@@ -17,7 +17,7 @@ typedef struct {
 data dados;
 int clock_a,c2;
 int x,y;
-int vivos[6] = {1,1,1,1,1,1}
+int vivos[6] = {1,1,1,1,1,1};
 int correcaoTamanho_X[5] = {7,24,38,50,62};
 int correcaoTamanho_Y[5] = {17,28,36,46,53};
 int tamanho[6] = {0,0,0,0,0,0};
