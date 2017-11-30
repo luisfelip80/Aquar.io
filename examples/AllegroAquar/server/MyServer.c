@@ -51,8 +51,9 @@ void GeraPosicao(){
     do{
             srand((unsigned)time(NULL));
             y=rand()%470;
-            x=rand()%630;      
-    }while (( x < 10 || y <10) && x%3==0 && y%3==0);
+            x=rand()%630;
+
+    }while (( x < 10 || y <10) && x%10!=0 && y%10!=0);
 }
 
 // recebe a posição anterior para apagar e, a próxima "px" e "py" para marcar o personagem.  
@@ -188,20 +189,27 @@ int main() {
                     dados.direcao = dados_aux.direcao;
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.permissao=1;
-                    for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho];i++){
+                    for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho]+5;i++){
                         for(j=1;j<=11;j++){
-                            if(map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='r'){
-                                map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
+                            if(map[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='r'){
+                                marcao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+1;
                                 dados.x_aux = dados_aux.X+j;
-                                dados.y_aux = dados_aux.Y-i;
+                                dados.y_aux = dados_aux.Y+i;
+                                printf("y %d x %d \n", dados.y_aux,  dados.x_aux);
+                                break;
                             }
-                            else if (map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='l' && dados_aux.tamanho > 1){
-                                map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
+                            else if (map[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='l' && dados_aux.tamanho > 1){
+                                marcao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+5;
                                 dados.x_aux=(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
-                                dados.y_aux=dados_aux.Y-i;
+                                dados.y_aux=dados_aux.Y+i;
+                                printf("y %d x %d \n", dados.y_aux,  dados.x_aux);
+                                break;
+                                
                             }
+                            if(fome[dados_aux.id] > dados_aux.fome)
+                                break;
                         }
                     }   
                 }
@@ -214,20 +222,29 @@ int main() {
                     dados.direcao = dados_aux.direcao;
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.permissao=1;
-                    for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho];i++){
+                    for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho]+5;i++){
                         for(j=1;j<=11;j++){
-                            if(map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=='r'){
-                                map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=32;
+
+                            if(marcao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=='r'){
+                                marcao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+1;
                                 dados.x_aux = (dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j;
-                                dados.y_aux = dados_aux.Y-i;
+                                dados.y_aux = dados_aux.Y+i;
+                                printf("y %d x %d \n", dados.y_aux,  dados.x_aux);
+                                break;
+                                
                             }
-                            else if (map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=='l' && dados_aux.tamanho > 1){
-                                map[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=32;
+                            else if (map[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=='l' && dados_aux.tamanho > 1){
+                                marcao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+5;
                                 dados.x_aux=(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])-j;
-                                dados.y_aux=dados_aux.Y-i;
+                                dados.y_aux=dados_aux.Y+i;
+                                printf("y %d x %d \n", dados.y_aux,  dados.x_aux);
+                                break;
+                                
                             }
+                            if(fome[dados_aux.id] > dados_aux.fome)
+                                break;
                         }
                     }   
                 }
@@ -247,6 +264,7 @@ int main() {
                 x_player[dados_aux.id] = dados.X;
                 y_player[dados_aux.id] = dados.Y;
                 dados.tamanho=tamanho[dados_aux.id];
+                //printf("yb %d xb %d \n", dados.y_aux,  dados.x_aux);
                 broadcast(&dados, sizeof(data)); 
             }
         } 
@@ -269,9 +287,13 @@ int main() {
             dados.id=6;
             dados.xb = bx;
             GeraPosicao();
-            dados.X=x;
-            dados.Y=y;
-            map[y] [x] = 'r';
+            dados.x_aux=x;
+            dados.y_aux=y;
+
+            if(marcao[y] [x] == 32){
+                marcao[y] [x] = 'r';
+            }
+            printf("x %d  y %d\n", x, y);
             broadcast(&dados,sizeof(data));
         }   
     }

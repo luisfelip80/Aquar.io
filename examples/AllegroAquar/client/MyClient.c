@@ -43,7 +43,7 @@ typedef struct {
 }data;
 
 
-char str[30] = {"192.168.15.166"};
+char str[30] = {"172.20.4.11"};
 bool sair = false;
 bool concluido = false;
 int bx=1,by=0;
@@ -150,7 +150,7 @@ void GeraPosicao(){
             srand((unsigned)time(NULL));
             y=rand()%470;
             x=rand()%630;      
-    }while (( x < 10 || y <10) && x%3==0 && y%3==0);
+    }while (( x < 10 || y <10) && x%10==0 && y%10==0);
     
 
 }
@@ -162,10 +162,21 @@ void mostraTela(int primeiro_X){
     for(i=0;i<ALTURA_TELA;i++){
         for(j=0;j<LARGURA_TELA;j++){
 
+            
+            if(map[i] [j] == 'i'){
+                isca_a = al_create_sub_bitmap(isca, x_bit_isca [xi],0, 77,76);
+                al_draw_bitmap(isca_a, j-38,i-37,0);
+            }
+
             if(marcao[i] [j] == 'L'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [0][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-79,i-65,0);
             }
+            
+            else if (marcao[i] [j] == 'r'){
+                al_draw_bitmap(racao, j-2,i-2,0);
+            }
+
             else if(marcao[i] [j] == 'l'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [1][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-79,i-65,0);
@@ -211,13 +222,6 @@ void mostraTela(int primeiro_X){
                 al_draw_bitmap(personagem_4, j-79,i-65,0);
             }
 
-            if(map[i] [j] == 'i'){
-                isca_a = al_create_sub_bitmap(isca, x_bit_isca [xi],0, 77,76);
-                al_draw_bitmap(isca_a, j-38,i-37,0);
-            }
-            else if (map[i] [j] == 'r'){
-                al_draw_bitmap(racao, j-2,i-2,0);
-            }
         }
     }
     al_flip_display();
@@ -239,16 +243,16 @@ void runGame() {
             ALLEGRO_EVENT evento;
             al_get_next_event(fila_eventos, &evento);
             if (evento.type == ALLEGRO_EVENT_KEY_DOWN){
-                    dados.tecla = evento.keyboard.keycode;
-                    //printf("%d\n",dados.tecla );
-                    dados.id=id;
-                    dados.X=x;
-                    dados.Y=y;
-                    dados.fome=fome;
-                    dados.tamanho=tamanho;
-                    dados.pers=Peixe_eu;
-                    dados.direcao=ant_dir[id];
-                    sendMsgToServer((void *)&dados,sizeof(data));
+                dados.tecla = evento.keyboard.keycode;
+                //printf("%d\n",dados.tecla );
+                dados.id=id;
+                dados.X=x;
+                dados.Y=y;
+                dados.fome=fome;
+                dados.tamanho=tamanho;
+                dados.pers=Peixe_eu;
+                dados.direcao=ant_dir[id];
+                sendMsgToServer((void *)&dados,sizeof(data));
             }
             else if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             sair = true; 
@@ -278,9 +282,9 @@ void runGame() {
                     ant_dir[dados.id]=1;
                 }
                 else if(dados.tecla==23){
-
+                    printf("y %d x %d \n",dados.y_aux,dados.x_aux );
                     marcaPosicao(x,y,dados.X,dados.Y, Peixe_eu,dados.direcao,1,dados.tamanho);
-                    map[dados.y_aux] [dados.x_aux]=32;
+                    marcao[dados.y_aux] [dados.x_aux]=32;
                     fome=dados.fome;
                     tamanho = dados.tamanho;
                     printf("fome %d\n", fome );
@@ -310,7 +314,7 @@ void runGame() {
                     else if(dados.tecla==23 && dados.tecla > 0){
 
                         marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,dados.direcao,1,dados.tamanho);
-                        map[dados.y_aux] [dados.x_aux]=32;
+                        marcao[dados.y_aux] [dados.x_aux]=32;
                     }
                     else if(dados.tecla < 0){
                         vivos[dados.id]=0;
@@ -322,14 +326,16 @@ void runGame() {
 
                     xA[dados.id]=dados.X;
                     yA[dados.id]=dados.Y;
-                    
                     }
 
                 }
                 if(dados.id==6){
                     xi++;
                     bx=dados.xb;
-                    map[dados.Y] [dados.X] = 'r';
+                    if(marcao[dados.y_aux] [dados.x_aux] == 32){
+                    marcao[dados.y_aux] [dados.x_aux] = 'r';
+                    }
+        
                     if(xi>=6)
                         xi=0;
                 }
