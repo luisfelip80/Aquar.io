@@ -147,13 +147,12 @@ void peixesVivos(int Fome_peixe, int ID){
 void GeraPosicao(){
 
     do{
-        
             srand((unsigned)time(NULL));
-            x=rand()%630;  
             y=rand()%470;
-        
-    } while ( x < 10 || y < 10);
+            x=rand()%630;      
+    }while (( x < 10 || y <10) && x%7==0 && y%7==0);
     
+
 }
 // faz uma cópia da matriz map na matriz tela e depois verifica em que posições na matriz macação estão
 // os jogadores. 

@@ -58,11 +58,13 @@ void GeraPosicao(){
 }
 
 // recebe a posição anterior para apagar e, a próxima "px" e "py" para marcar o personagem.  
-void marcaPosicao(int xx, int yy, int px,int py, char personagem){
-    marcao[py] [px] = personagem;
+void marcaPosicao(int xx, int yy, int px,int py, int personagem, int dir,int camada,int tamanho_peixe){
+    
+    marcao[py] [px] = pers[camada][dir][personagem];
     marcao[yy] [xx] = 32;
+    matriz_tamanho [py] [px] = tamanho_peixe;
+    matriz_tamanho [yy] [xx] = 0;
 }
-
 
 int main() {
     int t,i,j;
