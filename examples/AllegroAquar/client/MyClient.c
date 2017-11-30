@@ -132,7 +132,7 @@ void marcaPosicao(int xx, int yy, int px,int py, int personagem, int dir,int cam
     matriz_tamanho [py] [px] = tamanho_peixe;
     matriz_tamanho [yy] [xx] = 0;
 }
-void Morte(int xx, int yy, int personagem){
+void Morte(int xx, int yy){
     marcao[yy] [xx] = 32;
 }
 void peixesVivos(int Fome_peixe, int ID){
