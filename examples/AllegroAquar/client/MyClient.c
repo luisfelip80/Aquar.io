@@ -315,7 +315,7 @@ void runGame() {
                     }
                     else if(dados.tecla < 0){
                         vivos[dados.id]=0;
-                        Morte(xA[dados.id],yA[dados.id]);
+                        Morte(dados.X,dados.Y);
                     }
                     else {
                         marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,ant_dir[dados.id],0,dados.tamanho);

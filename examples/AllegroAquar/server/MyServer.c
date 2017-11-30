@@ -17,6 +17,7 @@ typedef struct {
 data dados;
 int clock_a,c2;
 int x,y;
+int x_player[6],y_player[6];
 int vivos[6] = {1,1,1,1,1,1};
 int correcaoTamanho_X[5] = {7,24,38,50,62};
 int correcaoTamanho_Y[5] = {17,28,36,46,53};
@@ -104,7 +105,8 @@ int main() {
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.id = dados_aux.id;
                     dados.permissao=1;
-
+                    x_player[dados_aux.id] = dados.X;
+                    y_player[dados_aux.id] = dados.Y;
                     broadcast(&dados, sizeof(data));    
                 }
                 else {
@@ -125,6 +127,8 @@ int main() {
                     //printf("x %d y %d\n", dados.X, dados.Y );
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.permissao=1;
+                    x_player[dados_aux.id] = dados.X;
+                    y_player[dados_aux.id] = dados.Y;
                     broadcast(&dados, sizeof(data));    
                 }
                 else {
@@ -145,6 +149,8 @@ int main() {
                     dados.tamanho = tamanho [dados_aux.id];
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.permissao=1;
+                    x_player[dados_aux.id] = dados.X;
+                    y_player[dados_aux.id] = dados.Y;
                     broadcast(&dados, sizeof(data));    
                 }
                 else {
@@ -163,6 +169,8 @@ int main() {
                     dados.tamanho = tamanho [dados_aux.id];
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.permissao=1;
+                    x_player[dados_aux.id] = dados.X;
+                    y_player[dados_aux.id] = dados.Y;
                     broadcast(&dados, sizeof(data));    
                 }
                 else {
@@ -239,6 +247,8 @@ int main() {
                 else if(dados.fome > 150 && dados.fome <= 200){
                     tamanho[dados_aux.id]=4;
                 }
+                x_player[dados_aux.id] = dados.X;
+                y_player[dados_aux.id] = dados.Y;
                 dados.tamanho=tamanho[dados_aux.id];
                 broadcast(&dados, sizeof(data)); 
             }
@@ -248,6 +258,8 @@ int main() {
             printf("%s disconnected, id = %d is free\n",client_names[msg_ret.client_id], msg_ret.client_id);
             dados.id=msg_ret.client_id;
             dados.fome=-1;
+            dados.X=x_player[dados_aux.id];
+            dados.Y=y_player[dados_aux.id];
             vivos[msg_ret.client_id]=0;            
             broadcast(&dados,sizeof(data));
         }
