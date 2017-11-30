@@ -47,6 +47,7 @@ char str[30] = {"192.168.15.166"};
 bool sair = false;
 bool concluido = false;
 int bx=1,by=0;
+int vivos[6]= {1,1,1,1,1,1}; 
 int fome=0,tamanho=0;
 int ant_dir [6] ={0,0,0,0,0,0};
 int matriz_tamanho [ALTURA_TELA] [LARGURA_TELA];
@@ -56,7 +57,7 @@ char marcao [ALTURA_TELA] [LARGURA_TELA] ,map [ALTURA_TELA] [LARGURA_TELA];
 data dados;
 // posição inicial dos outros playes, pode ser qualquer valor pois eles vão ser enviados para matriz marcão e serão
 // apagados como xAnterior e yAnterior.
-int id,Peixe_eu=1;
+int id,Peixe_eu=0;
 int xA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1},yA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1};
 int x,y,indicador_X_Bit=0,indicador_Y_Bit=0;
 int x_bit[2][5] = {{0,160,320,480,640},{1440,1280,1120,960,800}},y_bit[5] = {0,129,260,391,522};
@@ -64,7 +65,7 @@ int x_bit_isca[10]={0,77,154,231,308,385,462,539,616,693},xi=0;
 char res[2]={32,'\0'};
 bool pedir_nome = false,right=true,left=false;
 // os personagens são colocados de arcordo com o seu id.
-char pers[2] [2] [5] = { { {'L','U','I','S'},{'P','E','R','A'} } , { {'l','u','i','s'},{'p','e','r','a'} } };
+char pers [2] [2] [5] = { { {'L','U','I','S'},{'P','E','R','A'} } , { {'l','u','i','s'},{'p','e','r','a'} } };
 // monta as matrizes de mapa que é copiada para tela. A marcação recebe espaços vazios.
 void monta ();
 void GeraPosicao();
@@ -125,11 +126,22 @@ void monta () {
 
 // recebe a posição anterior para apagar e, a próxima "px" e "py" para marcar o personagem.  
 void marcaPosicao(int xx, int yy, int px,int py, int personagem, int dir,int camada,int tamanho_peixe){
-    printf("%c\n",pers[camada][dir][personagem] );
+    
     marcao[py] [px] = pers[camada][dir][personagem];
     marcao[yy] [xx] = 32;
     matriz_tamanho [py] [px] = tamanho_peixe;
     matriz_tamanho [yy] [xx] = 0;
+}
+void Morte(int xx, int yy, int personagem){
+    marcao[yy] [xx] = 32;
+}
+void peixesVivos(int Fome_peixe, int ID){
+    if(Fome_peixe >= 0){
+        vivos[ID]=1;
+    }
+    else {
+        vivos[ID]=0;
+    }
 }
 // Gera posicao aleatória para começo do jogo.
 void GeraPosicao(){
@@ -285,33 +297,43 @@ void runGame() {
             }
             // se receber mensagem do server, mas o id não for o seu, mostra essa posição como sendo outro jogador.
             if(dados.permissao == 1 && id != dados.id && dados.id != 6){
-                if(dados.tecla==83){
-                    marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,0,0,dados.tamanho);
-                    ant_dir[dados.id]=0;
-                }
-                else if(dados.tecla==82){
-                    marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,1,0,dados.tamanho);
-                    ant_dir[dados.id]=1;
-                }
-                else if(dados.tecla==23){
+                if(vivos[dados.id] == 1){
 
-                    marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,dados.direcao,1,dados.tamanho);
-                    map[dados.y_aux] [dados.x_aux]=32;
-                }
-                else {
-                    marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,ant_dir[dados.id],0,dados.tamanho);
-                }
+                    if(dados.tecla==83 && dados.tecla > 0){
+                        marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,0,0,dados.tamanho);
+                        ant_dir[dados.id]=0;
+                    }
+                    //pritar peixe na direção que ele andar
+                    else if(dados.tecla==82 && dados.tecla > 0){
+                        marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,1,0,dados.tamanho);
+                        ant_dir[dados.id]=1;
+                    }
+                    else if(dados.tecla==23 && dados.tecla > 0){
 
-                xA[dados.id]=dados.X;
-                yA[dados.id]=dados.Y;
-            }
-            if(dados.id==6){
-                xi++;
-                bx=dados.xb;
-                map[dados.Y] [dados.X] = 'r';
-                if(xi>=6)
-                    xi=0;
-            }
+                        marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,dados.direcao,1,dados.tamanho);
+                        map[dados.y_aux] [dados.x_aux]=32;
+                    }
+                    else if(dados.tecla < 0){
+                        vivos[dados.id]=0;
+                        Morte(xA[dados.id],yA[dados.id]);
+                    }
+                    else {
+                        marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,ant_dir[dados.id],0,dados.tamanho);
+                    }
+
+                    xA[dados.id]=dados.X;
+                    yA[dados.id]=dados.Y;
+                    
+                    }
+
+                }
+                if(dados.id==6){
+                    xi++;
+                    bx=dados.xb;
+                    map[dados.Y] [dados.X] = 'r';
+                    if(xi>=6)
+                        xi=0;
+                }
         }
         mostraTela(bx);
     }

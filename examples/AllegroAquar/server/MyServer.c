@@ -17,6 +17,7 @@ typedef struct {
 data dados;
 int clock_a,c2;
 int x,y;
+int vivos[6] = {1,1,1,1,1,1}
 int correcaoTamanho_X[5] = {7,24,38,50,62};
 int correcaoTamanho_Y[5] = {17,28,36,46,53};
 int tamanho[6] = {0,0,0,0,0,0};
@@ -61,6 +62,7 @@ void marcaPosicao(int xx, int yy, int px,int py, char personagem){
     marcao[yy] [xx] = 32;
 }
 
+
 int main() {
     int t,i,j;
     char client_names[MAX_CHAT_CLIENTS][LOGIN_MAX_SIZE];
@@ -102,6 +104,7 @@ int main() {
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
                     dados.id = dados_aux.id;
                     dados.permissao=1;
+
                     broadcast(&dados, sizeof(data));    
                 }
                 else {
@@ -167,6 +170,7 @@ int main() {
                     broadcast(&dados, sizeof(data));   
                 }
             }
+
             else if (dados_aux.tecla== 23){
 
                if(dados_aux.direcao ==0 && dados_aux.X+10 < LARGURA_TELA-10){
@@ -236,12 +240,16 @@ int main() {
                     tamanho[dados_aux.id]=4;
                 }
                 dados.tamanho=tamanho[dados_aux.id];
-            broadcast(&dados, sizeof(data)); 
+                broadcast(&dados, sizeof(data)); 
             }
         } 
         else if (msg_ret.status == DISCONNECT_MSG) {
             sprintf(str_buffer, "%s disconnected", client_names[msg_ret.client_id]);
             printf("%s disconnected, id = %d is free\n",client_names[msg_ret.client_id], msg_ret.client_id);
+            dados.id=msg_ret.client_id;
+            dados.fome=-1;
+            vivos[msg_ret.client_id]=0;            
+            broadcast(&dados,sizeof(data));
         }
         if(clock_a == 350){
             //printf("ok\n"); 
