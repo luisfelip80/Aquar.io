@@ -150,7 +150,7 @@ void GeraPosicao(){
             srand((unsigned)time(NULL));
             y=rand()%470;
             x=rand()%630;      
-    }while (( x < 10 || y <10) && x%7==0 && y%7==0);
+    }while (( x < 10 || y <10) && x%3==0 && y%3==0);
     
 
 }
