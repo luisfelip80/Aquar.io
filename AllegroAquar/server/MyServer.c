@@ -63,7 +63,8 @@ void marcaPosicao(int xx, int yy, int px,int py, char personagem, int ID){
     jogadores [yy] [xx] = 32;
 }
 
-int main() {
+int main() 
+{
     int t,i,j,k;
     char client_names[MAX_CHAT_CLIENTS][LOGIN_MAX_SIZE];
     char str_buffer[BUFFER_SIZE];
@@ -329,23 +330,33 @@ int main() {
 
             if(x%2==0){ // se a posição for par, gerará um "especial" podendo ser um peixe ou uma armadilha.
 
+                printf("Numero random: %d\n",x);
                 if(x<=430){
+                    printf("OK, entrou no if \n");
                  if(marcacao[y][x] == 32){
                     dados.id=7;
                     marcacao[y][x] = 'g';
+                    printf("Peixe verde aparece\n");
                    }
 
                  }
 
-                 else
+                 else{
+                    printf("OK, entrou no else\n");
+
                     if(marcacao[y][x] == 32){
-                    dados.id=8;
-                    marcacao[y][x] = 't';
+                    dados.id=7;
+                    marcacao[y][x] = 'g';
+                    printf("armadilha aparece\n");
                    }
+                }
 
             broadcast(&dados,sizeof(data));
         }  
 
 
+        }
     }
 }
+
+
