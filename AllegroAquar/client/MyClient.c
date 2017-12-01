@@ -379,6 +379,13 @@ void runGame() {
                     marcacao[dados.y_aux] [dados.x_aux] = 'g';
                     }
                 }
+
+
+                 if(dados.id==8){
+                    if(marcacao[dados.y_aux] [dados.x_aux] == 32){
+                    marcacao[dados.y_aux] [dados.x_aux] = 't';
+                    }
+                }
         }
         mostraTela(bx,fundo);
     }

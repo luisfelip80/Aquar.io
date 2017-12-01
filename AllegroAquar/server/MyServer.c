@@ -15,7 +15,7 @@ typedef struct {
       char nome[30];
 }data;
 data dados;
-int clock_a=0,c2=0,clock_trap=0;
+int clock_a=0,c2=0;
 int x,y;
 int x_player[6],y_player[6];
 int vivos[6] = {1,1,1,1,1,1};
@@ -74,7 +74,6 @@ int main() {
     while (1) {
         clock_a++;
         c2++;
-        clock_trap++;
         int id = acceptConnection();
 
         // se não estiver conectado
@@ -321,33 +320,32 @@ int main() {
             broadcast(&dados,sizeof(data));
         } 
         //peixe verde
-         if(c2 == 4000){
+         if(c2 == 2000){
             //printf("ok\n"); 
             c2=0;
-            dados.id=7;
             GeraPosicao();
             dados.x_aux=x;
             dados.y_aux=y;
 
-            if(marcacao[y] [x] == 32){
-                marcacao[y] [x] = 'g';
-            }
-            broadcast(&dados,sizeof(data));
-        }  
-        //trap
-         if(clock_trap == 4000){
-            //printf("ok\n"); 
-            clock_trap=0;
-            dados.id=7; //MUDAR ID DA TRAP
-            GeraPosicao();
-            dados.x_aux=x;
-            dados.y_aux=y;
+            if(x%2==0){ // se a posição for par, gerará um "especial" podendo ser um peixe ou uma armadilha.
 
-            if(marcacao[y] [x] == 32){
-                marcacao[y] [x] = 'g';//MUDAR LETRA DA TRAP
-            }
+                if(x<=430){
+                 if(marcacao[y][x] == 32){
+                    dados.id=7;
+                    marcacao[y][x] = 'g';
+                   }
+
+                 }
+
+                 else
+                    if(marcacao[y][x] == 32){
+                    dados.id=8;
+                    marcacao[y][x] = 't';
+                   }
+
             broadcast(&dados,sizeof(data));
         }  
+
 
     }
 }
