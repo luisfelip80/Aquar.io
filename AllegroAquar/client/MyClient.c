@@ -135,9 +135,6 @@ void monta () {
             matriz_tamanho [i] [j] = 0;
         }
     }
-    marcacao[40] [530] ='g';
-    marcacao[420] [240] ='g';
-    marcacao[310] [120] ='g';
 }
 
 // recebe a posição anterior para apagar e, a próxima "px" e "py" para marcar o personagem.  
@@ -375,6 +372,12 @@ void runGame() {
         
                     if(xi>=6)
                         xi=0;
+                }
+
+                 if(dados.id==7){
+                    if(marcacao[dados.y_aux] [dados.x_aux] == 32){
+                    marcacao[dados.y_aux] [dados.x_aux] = 'g';
+                    }
                 }
         }
         mostraTela(bx,fundo);

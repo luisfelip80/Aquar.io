@@ -15,7 +15,7 @@ typedef struct {
       char nome[30];
 }data;
 data dados;
-int clock_a,c2;
+int clock_a=0,c2=0,clock_trap=0;
 int x,y;
 int x_player[6],y_player[6];
 int vivos[6] = {1,1,1,1,1,1};
@@ -44,9 +44,6 @@ void monta () {
         }
 
     }
-    marcacao[40] [530] ='l';
-    marcacao[420] [240] ='l';
-    marcacao[310] [120] ='l';
 }
 void GeraPosicao(){
 
@@ -77,6 +74,7 @@ int main() {
     while (1) {
         clock_a++;
         c2++;
+        clock_trap++;
         int id = acceptConnection();
 
         // se não estiver conectado
@@ -321,6 +319,35 @@ int main() {
                 }
             }
             broadcast(&dados,sizeof(data));
-        }   
+        } 
+        //peixe verde
+         if(c2 == 4000){
+            //printf("ok\n"); 
+            c2=0;
+            dados.id=7;
+            GeraPosicao();
+            dados.x_aux=x;
+            dados.y_aux=y;
+
+            if(marcacao[y] [x] == 32){
+                marcacao[y] [x] = 'g';
+            }
+            broadcast(&dados,sizeof(data));
+        }  
+        //trap
+         if(clock_trap == 4000){
+            //printf("ok\n"); 
+            clock_trap=0;
+            dados.id=7; //MUDAR ID DA TRAP
+            GeraPosicao();
+            dados.x_aux=x;
+            dados.y_aux=y;
+
+            if(marcacao[y] [x] == 32){
+                marcacao[y] [x] = 'g';//MUDAR LETRA DA TRAP
+            }
+            broadcast(&dados,sizeof(data));
+        }  
+
     }
 }
