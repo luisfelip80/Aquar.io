@@ -25,6 +25,7 @@ int tamanho[6] = {0,0,0,0,0,0};
 int fome[6] = {0,0,0,0,0,0};
 int bx=1,by=0;
 char map [ALTURA_TELA] [LARGURA_TELA],marcao [ALTURA_TELA] [LARGURA_TELA];
+int jogadores [ALTURA_TELA] [LARGURA_TELA];
 data dados;
 int posi_inic_x[6] = {10,110,210,310,410,510},posi_inic_y = 440;
 
@@ -32,13 +33,14 @@ int posi_inic_x[6] = {10,110,210,310,410,510},posi_inic_y = 440;
 char pers[6] = {'L','U','I','S','F','E'};
 
 void monta () {
-    int i_des=0,j_des=0;
+    int i,j;
 
-    for( i_des = 0 ; i_des < ALTURA_TELA  ; i_des++ ){
+    for( i = 0 ; i < ALTURA_TELA  ; i++ ){
 
-        for( j_des = 0 ; j_des < LARGURA_TELA ; j_des++ ){
-            map[i_des] [j_des] =32;
-            marcao [i_des] [j_des] =32;
+        for( j = 0 ; j < LARGURA_TELA ; j++ ){
+            map[i] [j] =32;
+            marcao [i] [j] =32;
+            jogadores [i] [j] = 32;
         }
 
     }
@@ -57,9 +59,11 @@ void GeraPosicao(){
 }
 
 // recebe a posição anterior para apagar e, a próxima "px" e "py" para marcar o personagem.  
-void marcaPosicao(int xx, int yy, int px,int py, char personagem){
+void marcaPosicao(int xx, int yy, int px,int py, char personagem, int ID){
     marcao[py] [px] = personagem;
     marcao[yy] [xx] = 32;
+    jogadores [py] [px] = ID;
+    jogadores [yy] [xx] = 32;
 }
 
 int main() {
@@ -100,7 +104,7 @@ int main() {
                     dados.fome=fome[dados_aux.id];
                     dados.pers=dados_aux.pers;
                     dados.tamanho = tamanho [dados_aux.id];
-                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
+                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id],dados_aux.id );
                     dados.id = dados_aux.id;
                     dados.permissao=1;
                     x_player[dados_aux.id] = dados.X;
@@ -123,7 +127,7 @@ int main() {
                     dados.pers=dados_aux.pers;
                     dados.tamanho = tamanho [dados_aux.id];
                     //printf("x %d y %d\n", dados.X, dados.Y );
-                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
+                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id],dados_aux.id);
                     dados.permissao=1;
                     x_player[dados_aux.id] = dados.X;
                     y_player[dados_aux.id] = dados.Y;
@@ -145,7 +149,7 @@ int main() {
                     dados.tecla= dados_aux.tecla;
                     dados.pers = dados_aux.pers;
                     dados.tamanho = tamanho [dados_aux.id];
-                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
+                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id],dados_aux.id);
                     dados.permissao=1;
                     x_player[dados_aux.id] = dados.X;
                     y_player[dados_aux.id] = dados.Y;
@@ -165,7 +169,7 @@ int main() {
                     dados.fome=fome[dados_aux.id];
                     dados.pers=dados_aux.pers;
                     dados.tamanho = tamanho [dados_aux.id];
-                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
+                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id],dados_aux.id);
                     dados.permissao=1;
                     x_player[dados_aux.id] = dados.X;
                     y_player[dados_aux.id] = dados.Y;
@@ -187,7 +191,7 @@ int main() {
                     dados.tecla = dados_aux.tecla;
                     dados.pers = dados_aux.pers;
                     dados.direcao = dados_aux.direcao;
-                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
+                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id],dados_aux.id);
                     dados.permissao=1;
                     for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho]+5 && dados_aux.Y+i < ALTURA_TELA;i++){
                         for(j=1;j<=11;j++){
@@ -218,7 +222,7 @@ int main() {
                     dados.tecla = dados_aux.tecla;
                     dados.pers = dados_aux.pers;
                     dados.direcao = dados_aux.direcao;
-                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id]);
+                    marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id],dados_aux.id);
                     dados.permissao=1;
                     for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho]+5 && dados_aux.Y+i < ALTURA_TELA ;i++){
                         for(j=1;j<=11;j++){
