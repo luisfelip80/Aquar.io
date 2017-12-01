@@ -1,19 +1,19 @@
 #UNCOMMENT THESE TO COMPILE TERMINAL GAME
-CLIENTDIR := examples/Aquar/client
-SERVERDIR := examples/Aquar/server
-COMMONDIR := examples/simpleChat/common
+#CLIENTDIR := Aquar/client
+#SERVERDIR := Aquar/server
+#COMMONDIR := Aquar/common
 
 #UNCOMMENT THESE TO COMPILE WHIT GRAPHIC
-#CLIENTDIR := examples/AllegroAquar/client
-#SERVERDIR := examples/AllegroAquar/server
-#COMMONDIR := examples/AllegroAquar/common
+CLIENTDIR := AllegroAquar/client
+SERVERDIR := AllegroAquar/server
+COMMONDIR := AllegroAquar/common
 
 CC := gcc -std=c99
 RM := rm -f
 MK := mkdir -p
 #Uncomment above for intense debugging
 #CFLAGS := -Wall -Werror -Wconversion -Wextra
-LDLIB := -lm -lallegro -lallegro_image -lallegro_primitives -lallegro_font -lallegro_ttf
+LDLIB := -lm -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lallegro_acodec -lallegro_font -lallegro_ttf
 
 OUTPUTDIR := bin
 LIBDIR := lib
