@@ -67,7 +67,7 @@ void marcaPosicao(int xx, int yy, int px,int py, char personagem, int ID){
 }
 
 int main() {
-    int t,i,j;
+    int t,i,j,k;
     char client_names[MAX_CHAT_CLIENTS][LOGIN_MAX_SIZE];
     char str_buffer[BUFFER_SIZE];
     data dados_aux;
@@ -210,9 +210,9 @@ int main() {
                                 break;
                                 
                             }
-                            if(fome[dados_aux.id] > dados_aux.fome)
-                                break;
                         }
+                        if(fome[dados_aux.id] > dados_aux.fome)
+                                break;
                     }   
                 }
                 else if(dados_aux.direcao ==1 && dados_aux.X-10 >= 10 ){
@@ -243,22 +243,34 @@ int main() {
                                 break;
                                 
                             }
-                            if(fome[dados_aux.id] > dados_aux.fome)
-                                break;
+                            
+                            for(k=0;k<6;k++){
+                                if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]==pers[k] && dados_aux.fome >= fome[k]+30){
+                                    
+                                    fome[dados_aux.id] = dados_aux.fome+15;
+                                    fome [k] = -1;
+                                    dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                    dados.y_aux=dados_aux.Y+i;
+                                    break;
+                                    
+                                }
+                            }
                         }
+                        if(fome[dados_aux.id] > dados_aux.fome)
+                                break;
                     }   
                 }
                 dados.fome=fome[dados_aux.id];
-                if(dados.fome > 30 && dados.fome <= 50){
+                if(dados.fome > 30 && dados.fome <= 60){
                     tamanho[dados_aux.id]=1;
                 }
-                else if(dados.fome > 50 && dados.fome <= 100){
+                else if(dados.fome > 60 && dados.fome <= 90){
                     tamanho[dados_aux.id]=2;
                 }
-                else if(dados.fome > 100 && dados.fome <= 150){
+                else if(dados.fome > 90 && dados.fome <= 120){
                     tamanho[dados_aux.id]=3;
                 }
-                else if(dados.fome > 150 && dados.fome <= 200){
+                else if(dados.fome > 120 && dados.fome <= 150){
                     tamanho[dados_aux.id]=4;
                 }
                 x_player[dados_aux.id] = dados.X;
@@ -293,7 +305,20 @@ int main() {
             if(marcacao[y] [x] == 32){
                 marcacao[y] [x] = 'r';
             }
-            //printf("x %d  y %d\n", x, y);
+            for(k=0;k<6;k++){
+                if (fome[k]==-1){
+                    dados.id=k;
+                    dados.fome=-1;
+                    for( i = 0 ; i < ALTURA_TELA  ; i++ ){
+                        for( j = 0 ; j < LARGURA_TELA ; j++ ){
+                            if(jogadores[i][j]==k){
+                               dados.X=j;
+                               dados.Y=i;
+                            }   
+                        }
+                    }
+                }
+            }
             broadcast(&dados,sizeof(data));
         }   
     }

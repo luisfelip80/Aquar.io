@@ -362,6 +362,9 @@ void runGame() {
                     }
 
                 }
+                if(dados.fome==-1){
+                    
+                }
                 if(dados.id==6){
                     xi++;
                     bx=dados.xb;
