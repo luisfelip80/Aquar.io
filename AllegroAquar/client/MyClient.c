@@ -363,7 +363,7 @@ void runGame() {
 
                 }
                 if(dados.fome==-1){
-                    Morte(dados.X,Morte.Y);
+                    Morte(dados.X,dados.Y);
                     vivos[dados.id] = 0;
                 }
                 if(dados.id==6){
