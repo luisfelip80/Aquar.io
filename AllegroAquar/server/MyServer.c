@@ -24,7 +24,7 @@ int correcaoTamanho_Y[5] = {17,28,36,46,53};
 int tamanho[6] = {0,0,0,0,0,0};
 int fome[6] = {0,0,0,0,0,0};
 int bx=1,by=0;
-char map [ALTURA_TELA] [LARGURA_TELA],marcao [ALTURA_TELA] [LARGURA_TELA];
+char map [ALTURA_TELA] [LARGURA_TELA],marcacao [ALTURA_TELA] [LARGURA_TELA];
 int jogadores [ALTURA_TELA] [LARGURA_TELA];
 data dados;
 int posi_inic_x[6] = {10,110,210,310,410,510},posi_inic_y = 440;
@@ -39,14 +39,14 @@ void monta () {
 
         for( j = 0 ; j < LARGURA_TELA ; j++ ){
             map[i] [j] =32;
-            marcao [i] [j] =32;
+            marcacao [i] [j] =32;
             jogadores [i] [j] = 32;
         }
 
     }
-    marcao[40] [530] ='l';
-    marcao[420] [240] ='l';
-    marcao[310] [120] ='l';
+    marcacao[40] [530] ='l';
+    marcacao[420] [240] ='l';
+    marcacao[310] [120] ='l';
 }
 void GeraPosicao(){
 
@@ -60,8 +60,8 @@ void GeraPosicao(){
 
 // recebe a posição anterior para apagar e, a próxima "px" e "py" para marcar o personagem.  
 void marcaPosicao(int xx, int yy, int px,int py, char personagem, int ID){
-    marcao[py] [px] = personagem;
-    marcao[yy] [xx] = 32;
+    marcacao[py] [px] = personagem;
+    marcacao[yy] [xx] = 32;
     jogadores [py] [px] = ID;
     jogadores [yy] [xx] = 32;
 }
@@ -195,15 +195,15 @@ int main() {
                     dados.permissao=1;
                     for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho]+5 && dados_aux.Y+i < ALTURA_TELA;i++){
                         for(j=1;j<=11;j++){
-                            if(marcao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='r'){
-                                marcao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
+                            if(marcacao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='r'){
+                                marcacao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+1;
                                 dados.x_aux = (dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
                                 dados.y_aux = dados_aux.Y+i;
                                 break;
                             }
                             else if (map[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='l' && dados_aux.tamanho > 1){
-                                marcao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
+                                marcacao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+5;
                                 dados.x_aux=(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
                                 dados.y_aux=dados_aux.Y+i;
@@ -227,8 +227,8 @@ int main() {
                     for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho]+5 && dados_aux.Y+i < ALTURA_TELA ;i++){
                         for(j=1;j<=11;j++){
 
-                            if(marcao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='r'){
-                                marcao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=32;
+                            if(marcacao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='r'){
+                                marcacao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+1;
                                 dados.x_aux = (dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
                                 dados.y_aux = dados_aux.Y+i;
@@ -236,7 +236,7 @@ int main() {
                                 
                             }
                             else if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='l' && dados_aux.tamanho > 1){
-                                marcao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=32;
+                                marcacao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+5;
                                 dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
                                 dados.y_aux=dados_aux.Y+i;
@@ -290,8 +290,8 @@ int main() {
             dados.x_aux=x;
             dados.y_aux=y;
 
-            if(marcao[y] [x] == 32){
-                marcao[y] [x] = 'r';
+            if(marcacao[y] [x] == 32){
+                marcacao[y] [x] = 'r';
             }
             //printf("x %d  y %d\n", x, y);
             broadcast(&dados,sizeof(data));

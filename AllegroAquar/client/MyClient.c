@@ -60,9 +60,9 @@ int vivos[6]= {1,1,1,1,1,1};
 int fome=0,tamanho=0;
 int ant_dir [6] ={0,0,0,0,0,0};
 int matriz_tamanho [ALTURA_TELA] [LARGURA_TELA];
-// matriz marcao é a matriz onde é salva a posição de todos os jogadores.
+// matriz marcacao é a matriz onde é salva a posição de todos os jogadores.
 // map é o mapa que é copiado para a matriz tela para mostrar no terminal.
-char marcao [ALTURA_TELA] [LARGURA_TELA] ,map [ALTURA_TELA] [LARGURA_TELA];
+char marcacao [ALTURA_TELA] [LARGURA_TELA] ,map [ALTURA_TELA] [LARGURA_TELA];
 data dados;
 // posição inicial dos outros playes, pode ser qualquer valor pois eles vão ser enviados para matriz marcão e serão
 // apagados como xAnterior e yAnterior.
@@ -131,25 +131,25 @@ void monta () {
 
         for( j = 0 ; j < LARGURA_TELA ; j++ ){
             map[i] [j] =32;
-            marcao [i] [j] =32;
+            marcacao [i] [j] =32;
             matriz_tamanho [i] [j] = 0;
         }
     }
-    marcao[40] [530] ='g';
-    marcao[420] [240] ='g';
-    marcao[310] [120] ='g';
+    marcacao[40] [530] ='g';
+    marcacao[420] [240] ='g';
+    marcacao[310] [120] ='g';
 }
 
 // recebe a posição anterior para apagar e, a próxima "px" e "py" para marcar o personagem.  
 void marcaPosicao(int xx, int yy, int px,int py, int personagem, int dir,int camada,int tamanho_peixe){
     
-    marcao[py] [px] = pers[camada][dir][personagem];
-    marcao[yy] [xx] = 32;
+    marcacao[py] [px] = pers[camada][dir][personagem];
+    marcacao[yy] [xx] = 32;
     matriz_tamanho [py] [px] = tamanho_peixe;
     matriz_tamanho [yy] [xx] = 0;
 }
 void Morte(int xx, int yy){
-    marcao[yy] [xx] = 32;
+    marcacao[yy] [xx] = 32;
 }
 void peixesVivos(int Fome_peixe, int ID){
     if(Fome_peixe >= 0){
@@ -179,71 +179,71 @@ void mostraTela(int primeiro_X, ALLEGRO_BITMAP *tela){
         for(j=0;j<LARGURA_TELA;j++){
 
             if(f_choice){
-                if(marcao[i] [j] == 'g'){
+                if(marcacao[i] [j] == 'g'){
                     isca_a = al_create_sub_bitmap(isca, x_bit_isca [xi],0, 77,76);
                     al_draw_bitmap(isca_a, j-38,i-37,0);
                 }
             }
-            if (marcao[i] [j] == 'w'){
+            if (marcacao[i] [j] == 'w'){
                 al_draw_bitmap(racao, j-2,i-2,0);
             }
-            if(marcao[i] [j] == 'L'){
+            if(marcacao[i] [j] == 'L'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [0][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-89,i-65,0);
                 
             }
-            else if(marcao[i] [j] == 'l'){
+            else if(marcacao[i] [j] == 'l'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [1][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-89,i-65,0);
 
             }
-            else if(marcao[i] [j] == 'P'){
+            else if(marcacao[i] [j] == 'P'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [1][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-70,i-65,0);
 
             }
-            else if(marcao[i] [j] == 'p'){
+            else if(marcacao[i] [j] == 'p'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [0][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-70,i-65,0);
 
             }
-            else if(marcao[i] [j] == 'U'){
+            else if(marcacao[i] [j] == 'U'){
                 personagem_2 = al_create_sub_bitmap(peixe2, x_bit [0][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_2, j-89,i-65,0);
             }
-            else if(marcao[i] [j] == 'u'){
+            else if(marcacao[i] [j] == 'u'){
                 personagem_2 = al_create_sub_bitmap(peixe2, x_bit [1][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_2, j-89,i-65,0);
             }
-            else if(marcao[i] [j] == 'E'){
+            else if(marcacao[i] [j] == 'E'){
                 personagem_2 = al_create_sub_bitmap(peixe2, x_bit [1][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_2, j-65,i-65,0);
             }
-            else if(marcao[i] [j] == 'e'){
+            else if(marcacao[i] [j] == 'e'){
                 personagem_2 = al_create_sub_bitmap(peixe2, x_bit [0][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_2, j-65,i-65,0);
             }
-            else if(marcao[i] [j] == 'I'){
+            else if(marcacao[i] [j] == 'I'){
                 personagem_3 = al_create_sub_bitmap(peixe3, x_bit [0][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_3,j-89,i-65,0);
             }
-            else if(marcao[i] [j] == 'i'){
+            else if(marcacao[i] [j] == 'i'){
                 personagem_3 = al_create_sub_bitmap(peixe3, x_bit [1][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_3, j-89,i-65,0);
             }
-            else if(marcao[i] [j] == 'R'){
+            else if(marcacao[i] [j] == 'R'){
                 personagem_3 = al_create_sub_bitmap(peixe3, x_bit [1][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_3, j-89,i-65,0);
             }
-            else if(marcao[i] [j] == 'r'){
+            else if(marcacao[i] [j] == 'r'){
                 personagem_3 = al_create_sub_bitmap(peixe3, x_bit [0][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_3, j-89,i-65,0);
             }
-            else if(marcao[i] [j] == 'S'){
+            else if(marcacao[i] [j] == 'S'){
                 personagem_4 = al_create_sub_bitmap(peixe4, x_bit [1][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_4, j-89,i-65,0);
             }
-            else if(marcao[i] [j] == 'A'){
+            else if(marcacao[i] [j] == 'A'){
                 personagem_4 = al_create_sub_bitmap(peixe4, x_bit [1][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_4, j-79,i-65,0);
             }
@@ -312,9 +312,9 @@ void runGame() {
                 else if(dados.tecla==23){
                     //printf("y %d x %d \n",dados.y_aux,dados.x_aux );
                     marcaPosicao(x,y,dados.X,dados.Y, Peixe_eu,dados.direcao,1,dados.tamanho);
-                    //printf("antes - %c\n", marcao[dados.y_aux] [dados.x_aux]);
-                    marcao[dados.y_aux] [dados.x_aux]=32;
-                    //printf("depos - %c\n", marcao[dados.y_aux] [dados.x_aux]);
+                    //printf("antes - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
+                    marcacao[dados.y_aux] [dados.x_aux]=32;
+                    //printf("depos - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
                     fome=dados.fome;
                     tamanho = dados.tamanho;
                     printf("fome %d\n", fome );
@@ -344,9 +344,9 @@ void runGame() {
                     else if(dados.tecla==23 && dados.tecla > 0){
 
                         marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,dados.direcao,1,dados.tamanho);
-                        printf("antes - %c\n", marcao[dados.y_aux] [dados.x_aux]);
-                        marcao[dados.y_aux] [dados.x_aux]=32;
-                        printf("depos - %c\n", marcao[dados.y_aux] [dados.x_aux]);
+                        printf("antes - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
+                        marcacao[dados.y_aux] [dados.x_aux]=32;
+                        printf("depos - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
                     }
 
                     else if(dados.tecla < 0){
@@ -365,8 +365,8 @@ void runGame() {
                 if(dados.id==6){
                     xi++;
                     bx=dados.xb;
-                    if(marcao[dados.y_aux] [dados.x_aux] == 32){
-                    marcao[dados.y_aux] [dados.x_aux] = 'w';
+                    if(marcacao[dados.y_aux] [dados.x_aux] == 32){
+                    marcacao[dados.y_aux] [dados.x_aux] = 'w';
                     }
         
                     if(xi>=6)
