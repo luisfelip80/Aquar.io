@@ -51,7 +51,7 @@ typedef struct {
 }data;
 
 
-char str[30] = {"192.168.15.166"};
+char str[30] = {"172.20.4.13"};
 bool sair = false;
 bool concluido = false;
 bool f_choice = false;
@@ -299,7 +299,7 @@ void runGame() {
         else if (ret != NO_MESSAGE) {
             //printf("per %d id %d \n", dados.permissao,dados.id);
              // se a permição para o pedido enviado for igual a 1, o client executa o que pediu para fazer.
-             if(dados.permissao == 1 && id == dados.id){
+             if(dados.permissao == 1 && id == dados.id && vivos[id] == 1){
                 
                 if(dados.tecla==83){//left
                     marcaPosicao(x,y,dados.X,dados.Y,Peixe_eu,0,0, dados.tamanho);
@@ -329,7 +329,7 @@ void runGame() {
                  
             }
             // se receber mensagem do server, mas o id não for o seu, mostra essa posição como sendo outro jogador.
-            if(dados.permissao == 1 && id != dados.id && dados.id != 6){
+            if(dados.permissao == 1 && id != dados.id && dados.id != 6 && vivos[dados.id] == 1){
                 if(vivos[dados.id] == 1){
 
                     if(dados.tecla==83 && dados.tecla > 0){
@@ -363,7 +363,8 @@ void runGame() {
 
                 }
                 if(dados.fome==-1){
-                    
+                    Morte(dados.X,Morte.Y);
+                    vivos[dados.id] = 0;
                 }
                 if(dados.id==6){
                     xi++;

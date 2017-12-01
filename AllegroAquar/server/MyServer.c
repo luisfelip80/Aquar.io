@@ -309,6 +309,7 @@ int main() {
                 if (fome[k]==-1){
                     dados.id=k;
                     dados.fome=-1;
+                    vivos[k]=0;
                     for( i = 0 ; i < ALTURA_TELA  ; i++ ){
                         for( j = 0 ; j < LARGURA_TELA ; j++ ){
                             if(jogadores[i][j]==k){
