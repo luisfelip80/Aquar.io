@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 
+
 #define MSG_MAX_SIZE 350
 #define BUFFER_SIZE (MSG_MAX_SIZE)
 #define LOGIN_MAX_SIZE 13
@@ -10,9 +11,11 @@
 #define LARGURA_TELA 640
 #define ALTURA_TELA 480
 
+
+
 typedef struct {
       int X,Y,permissao,id,tecla,pers,tamanho,xb,yb,fome,direcao,x_aux,y_aux;
-      char nome[30];
+      char nome[30],time[10];
 }data;
 data dados;
 int clock_a=0,c2=0;
@@ -64,8 +67,12 @@ void marcaPosicao(int xx, int yy, int px,int py, char personagem, int ID){
 }
 
 int main() 
-{
+{   
+    time_t start, delta;
+    int minutos,segundos,minutosC=0,segundosC=0;
     int t,i,j,k;
+    int flagBoladona=0;
+    char num[6];
     char client_names[MAX_CHAT_CLIENTS][LOGIN_MAX_SIZE];
     char str_buffer[BUFFER_SIZE];
     data dados_aux;
@@ -88,11 +95,33 @@ int main()
             sendMsgToClient(&dados, sizeof(data),id);
             broadcast(&dados, sizeof(data));
         }
+        if(flagBoladona){
+        delta=time(NULL)-start;
+        minutos=(delta/60)%60;
+        segundos=delta%60;
+        }
+        if(flagBoladona && segundos>segundosC ){
+            segundosC=segundos;
+            sprintf(dados.time,"%d:%d",minutos,segundos);
+            //printf("%s\n", dados.time );
+        }
+
+        if(segundos>=15){
+            dados.permissao=2;
+            broadcast(&dados,sizeof(data));
+        }
 
         struct msg_ret_t msg_ret = recvMsg(&dados_aux);
+
         //mensagem nova
         if (msg_ret.status == MESSAGE_OK) {
 
+            if(dados_aux.id==0 && dados_aux.permissao == 2){
+                start=time(NULL);
+                flagBoladona=1;
+                //printf("ok\n");
+            }
+            
             if(dados_aux.tecla == 85){ // up
 
                 if(dados_aux.Y+10 < ALTURA_TELA-10 && map[dados_aux.Y+10] [dados_aux.X]!='l'){
@@ -281,6 +310,14 @@ int main()
         else if (msg_ret.status == DISCONNECT_MSG) {
             sprintf(str_buffer, "%s disconnected", client_names[msg_ret.client_id]);
             printf("%s disconnected, id = %d is free\n",client_names[msg_ret.client_id], msg_ret.client_id);
+            if(msg_ret.client_id==0){
+                segundos=0;
+                segundosC=0;
+                flagBoladona=0;
+            }
+            vivos[msg_ret.client_id]=1;
+            tamanho[msg_ret.client_id]=0;
+            fome[msg_ret.client_id]=0;
             dados.id=msg_ret.client_id;
             dados.fome=-1;
             dados.X=x_player[dados_aux.id];
@@ -330,24 +367,24 @@ int main()
 
             if(x%2==0){ // se a posição for par, gerará um "especial" podendo ser um peixe ou uma armadilha.
 
-                printf("Numero random: %d\n",x);
+                //printf("Numero random: %d\n",x);
                 if(x<=430){
-                    printf("OK, entrou no if \n");
+                    //printf("OK, entrou no if \n");
                  if(marcacao[y][x] == 32){
                     dados.id=7;
                     marcacao[y][x] = 'g';
-                    printf("Peixe verde aparece\n");
+                    //printf("Peixe verde aparece\n");
                    }
 
                  }
 
                  else{
-                    printf("OK, entrou no else\n");
+                    //printf("OK, entrou no else\n");
 
                     if(marcacao[y][x] == 32){
                     dados.id=7;
                     marcacao[y][x] = 'g';
-                    printf("armadilha aparece\n");
+                    //printf("armadilha aparece\n");
                    }
                 }
 

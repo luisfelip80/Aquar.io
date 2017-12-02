@@ -39,6 +39,7 @@ ALLEGRO_BITMAP *personagem_3 = NULL;
 ALLEGRO_BITMAP *personagem_4 = NULL;
 ALLEGRO_DISPLAY *janela = NULL;
 ALLEGRO_FONT *fonte = NULL;
+ALLEGRO_FONT *fonteM = NULL;
 ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
 ALLEGRO_EVENT_QUEUE *Eventos = NULL;
 ALLEGRO_AUDIO_STREAM *musica = NULL;
@@ -47,11 +48,11 @@ ALLEGRO_AUDIO_STREAM *musica = NULL;
 
 typedef struct {
   int X,Y,permissao,id,tecla,pers,tamanho,xb,yb,fome,direcao,x_aux,y_aux;
-  char nome[30];
+  char nome[30],time[10];
 }data;
 
 
-char str[30] = {"172.20.4.13"};
+char str[30] = {"192.168.15.166"};
 bool sair = false;
 bool concluido = false;
 bool f_choice = false;
@@ -74,6 +75,8 @@ int correcaoTamanho_Y[5] = {17,28,36,46,53};
 int x_bit[2][5] = {{0,160,320,480,640},{1440,1280,1120,960,800}},y_bit[5] = {0,129,260,391,522};
 int x_bit_isca[10]={0,77,154,231,308,385,462,539,616,693},xi=0;
 char res[2]={32,'\0'};
+char tempo[10]="0:0";
+bool flagBoladona=false;
 bool pedir_nome = false,right=true,left=false;
 // os personagens são colocados de arcordo com o seu id.
 char pers [2] [2] [5] = { { {'L','U','I','S'},{'P','E','R','A'} } , { {'l','u','i','s'},{'p','e','r','a'} } };
@@ -172,6 +175,11 @@ void GeraPosicao(){
 void mostraTela(int primeiro_X, ALLEGRO_BITMAP *tela){
     int i,j;
     al_draw_bitmap(tela,0,0,0);
+    if(flagBoladona){
+                al_draw_text(fonte, al_map_rgb(255,255,255), 310,
+                (20 - al_get_font_ascent(fonteM)) / 2,
+                ALLEGRO_ALIGN_CENTRE + al_get_font_ascent(fonteM), tempo);    
+    }
     for(i=0;i<ALTURA_TELA;i++){
         for(j=0;j<LARGURA_TELA;j++){
 
@@ -252,15 +260,22 @@ void mostraTela(int primeiro_X, ALLEGRO_BITMAP *tela){
     al_flip_display();
 }
 
-
 // tenta se conectar ao servidor.
 
 void runGame() {
     char ch,i,j;
     ch='l';
+    char minutosC,segundosC;
     printf("%d %d\n",x,y );
     marcaPosicao(0,0,x,y,Peixe_eu,0,0,0);
     mostraTela(0,fundo);
+    if(id==0){
+        printf("ok\n");
+        dados.id=0;
+        dados.permissao=2;
+        sendMsgToServer((void *)&dados,sizeof(data));
+    }
+    flagBoladona=true;
     while (1) {
         // se alguma tecla for pressionada e for diferente de 'l', envia posição, id e tecla.
         while (!al_is_event_queue_empty(fila_eventos)){
@@ -285,7 +300,6 @@ void runGame() {
             }
             //mostraTela(x_bit[bx],y_bit[by]);
         }
-        
         // receber mensagem do servidor
         int ret = recvMsgFromServer(&dados,DONT_WAIT);
         // se receber server diconect, acaba com a função
@@ -295,9 +309,13 @@ void runGame() {
         // se houver mensagem, ler os dados:
         else if (ret != NO_MESSAGE) {
             //printf("per %d id %d \n", dados.permissao,dados.id);
-             // se a permição para o pedido enviado for igual a 1, o client executa o que pediu para fazer.
+             // se a permissao para o pedido enviado for igual a 1, o client executa o que pediu para fazer.
+             if(dados.permissao==2){
+                return;
+             }
+             strcpy(tempo,dados.time);
              if(dados.permissao == 1 && id == dados.id && vivos[id] == 1){
-                
+                printf("%s\n", tempo);
                 if(dados.tecla==83){//left
                     marcaPosicao(x,y,dados.X,dados.Y,Peixe_eu,0,0, dados.tamanho);
                     ant_dir[dados.id]=0;
@@ -830,6 +848,12 @@ bool carregar_arquivos(){
     fonte = al_load_font("AllegroAquar/Resources/Fonts/Ubuntu-R.ttf", 42, 0);
     
     if (!fonte){
+        fprintf(stderr, "Falha ao carregar \"Ubuntu-R.ttf\".\n");
+        return false;
+    }
+    fonteM = al_load_font("AllegroAquar/Resources/Fonts/Ubuntu-R.ttf", 18, 0);
+    
+    if (!fonteM){
         fprintf(stderr, "Falha ao carregar \"Ubuntu-R.ttf\".\n");
         return false;
     }
