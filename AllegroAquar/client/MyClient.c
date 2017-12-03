@@ -16,11 +16,14 @@
 #define BUFFER_SIZE (MSG_MAX_SIZE + 100)
 #define LOGIN_MAX_SIZE 13
 #define HIST_MAX_SIZE 200
+#define MAX_LOG_SIZE 18
 
 #define LARGURA_TELA 640
 #define ALTURA_TELA 480
 
-
+ALLEGRO_BITMAP *lobby = NULL;
+ALLEGRO_BITMAP *instrucoes = NULL;
+ALLEGRO_BITMAP *creditos = NULL;
 ALLEGRO_BITMAP *fundo = NULL;
 ALLEGRO_BITMAP *imagem1 = NULL;
 ALLEGRO_BITMAP *imagem2 = NULL;
@@ -39,23 +42,26 @@ ALLEGRO_BITMAP *personagem_3 = NULL;
 ALLEGRO_BITMAP *personagem_4 = NULL;
 ALLEGRO_DISPLAY *janela = NULL;
 ALLEGRO_FONT *fonte = NULL;
+ALLEGRO_FONT *fonteChat = NULL;
 ALLEGRO_FONT *fonteM = NULL;
 ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
+ALLEGRO_EVENT_QUEUE *fila_eventos_lobby = NULL;
 ALLEGRO_EVENT_QUEUE *Eventos = NULL;
 ALLEGRO_AUDIO_STREAM *musica = NULL;
 
 
 
 typedef struct {
-  int X,Y,permissao,id,tecla,pers,tamanho,xb,yb,fome,direcao,x_aux,y_aux;
-  char nome[30],time[10];
+  int X,Y,permissao,id,tecla,pers,tamanho,xb,yb,fome,direcao,x_aux,y_aux,mens;
+  char nome[30],time[10],texto[50];
 }data;
 
 
-char str[30] = {"192.168.15.166"};
+char str_buffer [MAX_LOG_SIZE][50],str[30] = {"192.168.15.166"};
 bool sair = false;
 bool concluido = false;
 bool f_choice = false;
+bool lobby_flag=false;
 int bx=1,by=0;
 int vivos[6]= {1,1,1,1,1,1}; 
 int fome=0,tamanho=0;
@@ -64,7 +70,7 @@ int matriz_tamanho [ALTURA_TELA] [LARGURA_TELA];
 // matriz marcacao é a matriz onde é salva a posição de todos os jogadores.
 // map é o mapa que é copiado para a matriz tela para mostrar no terminal.
 char marcacao [ALTURA_TELA] [LARGURA_TELA] ,map [ALTURA_TELA] [LARGURA_TELA];
-data dados;
+data dados,dados_aux;
 // posição inicial dos outros playes, pode ser qualquer valor pois eles vão ser enviados para matriz marcão e serão
 // apagados como xAnterior e yAnterior.
 int id,Peixe_eu=0;
@@ -75,11 +81,11 @@ int correcaoTamanho_Y[5] = {17,28,36,46,53};
 int x_bit[2][5] = {{0,160,320,480,640},{1440,1280,1120,960,800}},y_bit[5] = {0,129,260,391,522};
 int x_bit_isca[10]={0,77,154,231,308,385,462,539,616,693},xi=0;
 char res[2]={32,'\0'};
-char tempo[10]="0:0";
+char tempo[10]="0:0",meu_nome[30];
 bool flagBoladona=false;
 bool pedir_nome = false,right=true,left=false;
 // os personagens são colocados de arcordo com o seu id.
-char pers [2] [2] [5] = { { {'L','U','I','S'},{'P','E','R','A'} } , { {'l','u','i','s'},{'p','e','r','a'} } };
+char fom [5],pers [2] [2] [5] = { { {'L','U','I','S'},{'P','E','R','A'} } , { {'l','u','i','s'},{'p','e','r','a'} } };
 // monta as matrizes de mapa que é copiada para tela. A marcação recebe espaços vazios.
 void monta ();
 void GeraPosicao();
@@ -89,7 +95,7 @@ enum conn_ret_t tryConnect();
 bool assertConnection();
 void runGame();
 int maximo();
-void telaInicial();
+bool telaInicial();
 char manipular_char(ALLEGRO_EVENT evento);
 int conectar();
 bool inicializar();
@@ -98,6 +104,7 @@ void finalizar();
 void manipular_entrada();
 void exibir_texto_centralizado();
 bool Choice();
+bool lobbyMenu();
 
 int main() {
     if(!inicializar()){
@@ -111,8 +118,15 @@ int main() {
     
     dados.X=x;
     dados.Y=y;
-    telaInicial(); 
+     
+    if (!telaInicial()){
+        return 0;
+    }
+    
     if (!Choice()){
+        return 0;
+    }
+    if (!lobbyMenu()){
         return 0;
     }
     //while(!sair) {
@@ -172,13 +186,17 @@ void GeraPosicao(){
 }
 // faz uma cópia da matriz map na matriz tela e depois verifica em que posições na matriz macação estão
 // os jogadores. 
-void mostraTela(int primeiro_X, ALLEGRO_BITMAP *tela){
+void mostraTela(int primeiro_X){
     int i,j;
-    al_draw_bitmap(tela,0,0,0);
+    
     if(flagBoladona){
                 al_draw_text(fonte, al_map_rgb(255,255,255), 310,
                 (20 - al_get_font_ascent(fonteM)) / 2,
-                ALLEGRO_ALIGN_CENTRE + al_get_font_ascent(fonteM), tempo);    
+                ALLEGRO_ALIGN_CENTRE + al_get_font_ascent(fonteM), tempo);
+                
+                al_draw_text(fonteChat, al_map_rgb(255,255,255), 10,
+        		460 ,al_get_font_ascent(fonteChat), fom);
+            
     }
     for(i=0;i<ALTURA_TELA;i++){
         for(j=0;j<LARGURA_TELA;j++){
@@ -263,12 +281,14 @@ void mostraTela(int primeiro_X, ALLEGRO_BITMAP *tela){
 // tenta se conectar ao servidor.
 
 void runGame() {
-    char ch,i,j;
+    al_draw_bitmap(fundo,0,0,0);
+    char ch;
+    int i,j,k;
     ch='l';
     char minutosC,segundosC;
     printf("%d %d\n",x,y );
     marcaPosicao(0,0,x,y,Peixe_eu,0,0,0);
-    mostraTela(0,fundo);
+    mostraTela(0);
     if(id==0){
         printf("ok\n");
         dados.id=0;
@@ -277,6 +297,9 @@ void runGame() {
     }
     flagBoladona=true;
     while (1) {
+    	al_draw_bitmap(fundo,0,0,0);
+    	sprintf(fom,"Score: %d\n", fome);
+    	                            
         // se alguma tecla for pressionada e for diferente de 'l', envia posição, id e tecla.
         while (!al_is_event_queue_empty(fila_eventos)){
             
@@ -315,7 +338,7 @@ void runGame() {
              }
              strcpy(tempo,dados.time);
              if(dados.permissao == 1 && id == dados.id && vivos[id] == 1){
-                printf("%s\n", tempo);
+                //printf("%s\n", tempo);
                 if(dados.tecla==83){//left
                     marcaPosicao(x,y,dados.X,dados.Y,Peixe_eu,0,0, dados.tamanho);
                     ant_dir[dados.id]=0;
@@ -332,7 +355,7 @@ void runGame() {
                     //printf("depos - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
                     fome=dados.fome;
                     tamanho = dados.tamanho;
-                    printf("fome %d\n", fome );
+                    //printf("fome %d\n", fome );
                 }
                 else {
                     marcaPosicao(x,y,dados.X,dados.Y,Peixe_eu,ant_dir[dados.id],0,dados.tamanho);
@@ -359,9 +382,9 @@ void runGame() {
                     else if(dados.tecla==23 && dados.tecla > 0){
 
                         marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,dados.direcao,1,dados.tamanho);
-                        printf("antes - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
+                        //printf("antes - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
                         marcacao[dados.y_aux] [dados.x_aux]=32;
-                        printf("depos - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
+                        //printf("depos - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
                     }
 
                     else if(dados.tecla < 0){
@@ -384,8 +407,15 @@ void runGame() {
                 if(dados.id==6){
                     xi++;
                     bx=dados.xb;
-                    if(marcacao[dados.y_aux] [dados.x_aux] == 32){
-                    marcacao[dados.y_aux] [dados.x_aux] = 'w';
+                    
+                    for(k=0;k<2;k++){
+	                    for(j=0;j<2;j++){
+		                    for(i=0;i<5;i++){       	
+		                    	if(marcacao[dados.y_aux] [dados.x_aux] != pers[k][j][i]){
+		                    	marcacao[dados.y_aux] [dados.x_aux] = 'w';
+		                    	}	
+		                    }
+	                	}
                     }
         
                     if(xi>=6)
@@ -393,19 +423,31 @@ void runGame() {
                 }
 
                  if(dados.id==7){
-                    if(marcacao[dados.y_aux] [dados.x_aux] == 32){
-                    marcacao[dados.y_aux] [dados.x_aux] = 'g';
+                    for(k=0;k<2;k++){
+	                    for(j=0;j<2;j++){
+		                    for(i=0;i<5;i++){       	
+		                    	if(marcacao[dados.y_aux] [dados.x_aux] != pers[k][j][i]){
+		                    	marcacao[dados.y_aux] [dados.x_aux] = 'g';
+		                    	}	
+		                    }
+	                	}
                     }
                 }
 
 
                  if(dados.id==8){
-                    if(marcacao[dados.y_aux] [dados.x_aux] == 32){
-                    marcacao[dados.y_aux] [dados.x_aux] = 't';
+                    for(k=0;k<2;k++){
+	                    for(j=0;j<2;j++){
+		                    for(i=0;i<5;i++){       	
+		                    	if(marcacao[dados.y_aux] [dados.x_aux] != pers[k][j][i]){
+		                    	marcacao[dados.y_aux] [dados.x_aux] = 't';
+		                    	}	
+		                    }
+	                	}
                     }
                 }
         }
-        mostraTela(bx,fundo);
+        mostraTela(bx);
     }
 }
 int maximo(int h){
@@ -438,7 +480,7 @@ int conecta(){
     return 0;s
 }
 */
-void telaInicial(){
+bool telaInicial(){
    
     int i;
     // enquanto o server não se conectar
@@ -478,6 +520,7 @@ void telaInicial(){
                                                     recvMsgFromServer(&dados,WAIT_FOR_IT);
                                                     // salva id recebido.
                                                     id=dados.id;
+                                                    strcpy(meu_nome,dados.nome);
                                                     pedir_nome = true;
                                                     dados.tecla=83;
                                                     dados.id=id;
@@ -555,7 +598,7 @@ void telaInicial(){
             if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
                 concluido = true;
                 sair = true;
-                return; 
+                return false; 
             }
         }
         if(!concluido){
@@ -568,9 +611,171 @@ void telaInicial(){
           al_flip_display();
         }
     }
+    return true;
+}
+bool lobbyMenu(){
+   	
+   	int i;
+    bool lobby_flag=false;
+    bool instru=false,cred=false;
+
+    // enquanto o server não se conectar
+    strcpy(str,"");
+    while (!lobby_flag) {
+        //printf("oi\n");    
+        instru=false;
+        cred=false;
+        while (!al_is_event_queue_empty(fila_eventos_lobby)){
+        //printf("opa\n");
+                    ALLEGRO_EVENT evento_lobby;
+                    al_wait_for_event(fila_eventos_lobby, &evento_lobby);
+         
+                    if (!lobby_flag){
+                        manipular_entrada(evento_lobby);
+                        
+                        if (evento_lobby.type == ALLEGRO_EVENT_KEY_DOWN && evento_lobby.keyboard.keycode == ALLEGRO_KEY_ENTER){
+                            if(strlen(str)>0){
+                                strcpy(dados.texto,str);
+                                strcpy(dados.nome,meu_nome);
+                                dados.id=id;
+                                dados.tecla=0;
+                                dados.mens=1;
+                                //printf("aj %s\n", dados.texto);
+                                sendMsgToServer((void *)&dados,sizeof(data));
+                                strcpy(str,"");
+                                dados.mens=0;
+                            }
+                        }
+                        
+                    }
+            if (evento_lobby.type == ALLEGRO_EVENT_MOUSE_AXES){
+                        	//printf("x %d  y %d\n", evento_lobby.mouse.x,evento_lobby.mouse.y);
+            }
+                        
+        	if (evento_lobby.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP){
+                
+                if(evento_lobby.mouse.x > 492 && evento_lobby.mouse.x < 625 && evento_lobby.mouse.y > 103 && evento_lobby.mouse.y <160){
+                //instruções
+                	while(!instru){
+                		al_draw_bitmap(instrucoes,0,0,0);
+                		al_flip_display();
+                		while (!al_is_event_queue_empty(fila_eventos_lobby)){
+        				//printf("opa\n");
+                 	    ALLEGRO_EVENT evento_lobby;
+                 	    al_wait_for_event(fila_eventos_lobby, &evento_lobby);
+         				
+	         				if(evento_lobby.type==ALLEGRO_EVENT_MOUSE_BUTTON_UP){
+	         					
+	         					if(evento_lobby.mouse.x > 70 && evento_lobby.mouse.x < 210 && evento_lobby.mouse.y > 245 && evento_lobby.mouse.y <305){
+         							instru=true;       					
+             				    }					
+	         				}
+                		}
+                		int mens = recvMsgFromServer(&dados_aux,DONT_WAIT);
+				        // se receber server diconect, acaba com a função
+				        if (mens == SERVER_DISCONNECTED) {
+				          return false;
+				        }
+				        // se houver mensagem, ler os dados:
+				        else if (mens != NO_MESSAGE) {
+							if(dados_aux.mens==2){
+								instru=true;
+								lobby_flag=true;
+							}	        	
+				        }
+                	}
+                }
+                else if(evento_lobby.mouse.x > 496 && evento_lobby.mouse.x < 616 && evento_lobby.mouse.y > 175 && evento_lobby.mouse.y <231){
+                // créditos
+                	while(!cred){
+                		al_draw_bitmap(creditos,0,0,0);
+                		al_flip_display();
+                		while (!al_is_event_queue_empty(fila_eventos_lobby)){
+        				//printf("opa\n");
+                 	    ALLEGRO_EVENT evento_lobby;
+                 	    al_wait_for_event(fila_eventos_lobby, &evento_lobby);
+         				
+	         				if(evento_lobby.type==ALLEGRO_EVENT_MOUSE_BUTTON_UP){
+	         					
+	         				cred=true;       					
+             				    					
+	         				}
+                		}
+                		int mens = recvMsgFromServer(&dados_aux,DONT_WAIT);
+				        // se receber server diconect, acaba com a função
+				        if (mens == SERVER_DISCONNECTED) {
+				          return false;
+				        }
+				        // se houver mensagem, ler os dados:
+				        else if (mens != NO_MESSAGE) {
+							if(dados_aux.mens==2){
+								cred=true;
+								lobby_flag=true;
+							}	        	
+				        }
+                	}
+                }
+                else if(evento_lobby.mouse.x > 488 && evento_lobby.mouse.x < 630 && evento_lobby.mouse.y > 245 && evento_lobby.mouse.y <322){
+                	if(id==0){
+                		dados.id=id;
+                		dados.permissao=10;
+                		sendMsgToServer((void *)&dados,sizeof(data));
+                		int mens = recvMsgFromServer(&dados_aux,WAIT_FOR_IT);
+				        // se receber server diconect, acaba com a função
+				        if (mens == SERVER_DISCONNECTED) {
+				          return false;
+				        }
+				        // se houver mensagem, ler os dados:
+				        else if (mens != NO_MESSAGE) {
+							if(dados_aux.mens==2){
+								lobby_flag=true;
+							}	        	
+				        }
+                	}
+
+                }   
+        	}                                         
+            if (evento_lobby.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+                concluido = true;
+                pedir_nome - true;
+                sair = true; 
+                lobby_flag=true;
+            }
+        }
+
+        int mens = recvMsgFromServer(&dados_aux,DONT_WAIT);
+        // se receber server diconect, acaba com a função
+        if (mens == SERVER_DISCONNECTED) {
+          return false;
+        }
+        // se houver mensagem, ler os dados:
+        else if (mens != NO_MESSAGE) {
+            // se receber mensagem do server, mas o id não for o seu, mostra essa posição como sendo outro jogador.
+            if(dados_aux.mens==1){
+                for(i = MAX_LOG_SIZE; i>=1; i--){
+                        strcpy(str_buffer[i],str_buffer[i-1]);
+                }
+                strcpy(str_buffer[0],dados_aux.texto);
+                strcpy(dados_aux.texto,"");
+                //printf("opa\n");
+                printf("%s\n",str_buffer[0]);
+                dados_aux.mens=0;
+            }
+        }
+        if(!lobby_flag){
+            al_draw_bitmap(lobby, 0, 0, 0);        
+            al_draw_text(fonteChat, al_map_rgb(0,0,0),130,210,al_get_font_ascent(fonteChat), str);
+            for(i = 0; i < MAX_LOG_SIZE; ++i){
+                al_draw_text(fonteChat, al_map_rgb(0, 0, 0), 63, 200 - (i*al_get_font_ascent(fonteChat)), al_get_font_ascent(fonteChat), str_buffer[i]);
+            }
+            al_draw_text(fonteChat, al_map_rgb(0,0,0),63,210,al_get_font_ascent(fonteChat), "Mensagem:");
+            al_flip_display();
+        }            
+    }  
+    return true;
 }
 bool Choice(){
-   
+   al_draw_bitmap(armario,0,0,0);
     // enquanto o server não se conectar
     // Flag indicando se o mouse está sobre o retângulo central
     marcaPosicao(0,0,209,172,0,0,0,0);
@@ -694,7 +899,7 @@ bool Choice(){
                     bx=dados.xb;
                 }
             }    
-    mostraTela(bx,armario);
+    mostraTela(bx);
     }
 Morte(209,172);
 Morte(328,172);
@@ -765,6 +970,7 @@ bool inicializar(){
     
 
     fila_eventos = al_create_event_queue();
+    fila_eventos_lobby = al_create_event_queue();
     Eventos = al_create_event_queue();
     if (!fila_eventos){ 
         fprintf(stderr, "Falha ao criar fila de eventos.\n");
@@ -776,6 +982,9 @@ bool inicializar(){
     //al_register_event_source(fila_eventos, al_get_mouse_event_source());  
     al_register_event_source(fila_eventos, al_get_keyboard_event_source());
     al_register_event_source(fila_eventos, al_get_display_event_source(janela));
+    al_register_event_source(fila_eventos_lobby, al_get_keyboard_event_source());
+    al_register_event_source(fila_eventos_lobby, al_get_display_event_source(janela));
+    al_register_event_source(fila_eventos_lobby, al_get_mouse_event_source());
     al_register_event_source(Eventos, al_get_mouse_event_source());
     al_register_event_source(Eventos, al_get_display_event_source(janela));
  
@@ -784,6 +993,23 @@ bool inicializar(){
 
 bool carregar_arquivos(){
     
+    lobby = al_load_bitmap("AllegroAquar/Resources/Wallpaper/lobby.png");
+    if(!lobby){
+        fprintf(stderr, "Falha ao abrir \"lobby.png\". \n");
+        return false;
+    }
+    creditos = al_load_bitmap("AllegroAquar/Resources/Wallpaper/creditos.png");
+    
+    if (!creditos){
+        fprintf(stderr, "Falha ao carregar \"creditos.png\".\n");
+        return false;
+    }
+    instrucoes = al_load_bitmap("AllegroAquar/Resources/Wallpaper/instrucoes.png");
+    
+    if (!instrucoes){
+        fprintf(stderr, "Falha ao carregar \"instrucoes.png\".\n");
+        return false;
+    }
     armario = al_load_bitmap("AllegroAquar/Resources/Wallpaper/armarioFundo.png");
     if(!armario){
         fprintf(stderr, "Falha ao abrir \"armario.png\". \n");
@@ -848,6 +1074,12 @@ bool carregar_arquivos(){
     fonte = al_load_font("AllegroAquar/Resources/Fonts/Ubuntu-R.ttf", 42, 0);
     
     if (!fonte){
+        fprintf(stderr, "Falha ao carregar \"Ubuntu-R.ttf\".\n");
+        return false;
+    }
+    fonteChat = al_load_font("AllegroAquar/Resources/Fonts/VCR_OSD_MONO_1.001.ttf", 13, 2);
+    
+    if (!fonteChat){
         fprintf(stderr, "Falha ao carregar \"Ubuntu-R.ttf\".\n");
         return false;
     }

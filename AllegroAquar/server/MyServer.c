@@ -14,9 +14,11 @@
 
 
 typedef struct {
-      int X,Y,permissao,id,tecla,pers,tamanho,xb,yb,fome,direcao,x_aux,y_aux;
-      char nome[30],time[10];
+  int X,Y,permissao,id,tecla,pers,tamanho,xb,yb,fome,direcao,x_aux,y_aux,mens;
+  char nome[30],time[10],texto[50];
 }data;
+
+
 data dados;
 int clock_a=0,c2=0;
 int x,y;
@@ -68,6 +70,7 @@ void marcaPosicao(int xx, int yy, int px,int py, char personagem, int ID){
 
 int main() 
 {   
+    FILE *arq;
     time_t start, delta;
     int minutos,segundos,minutosC=0,segundosC=0;
     int t,i,j,k;
@@ -86,10 +89,11 @@ int main()
 
         // se não estiver conectado
         if (id != NO_CONNECTION) {
-            recvMsgFromClient(&dados, id, WAIT_FOR_IT);
-            strcpy(client_names[id], dados.nome);
+            recvMsgFromClient(&dados_aux, id, WAIT_FOR_IT);
+            strcpy(client_names[id], dados_aux.nome);
             strcpy(str_buffer, client_names[id]);
             strcat(str_buffer, " connected to server");
+            strcpy(dados.nome,dados_aux.nome);
             printf("%s\n",str_buffer );
             dados.id=id;
             sendMsgToClient(&dados, sizeof(data),id);
@@ -99,14 +103,17 @@ int main()
         delta=time(NULL)-start;
         minutos=(delta/60)%60;
         segundos=delta%60;
-        }
+        }   
         if(flagBoladona && segundos>segundosC ){
             segundosC=segundos;
             sprintf(dados.time,"%d:%d",minutos,segundos);
-            //printf("%s\n", dados.time );
+            printf("%s\n", dados.time );
+        }
+        if(segundosC=59){
+            segundosC=-1;
         }
 
-        if(segundos>=15){
+        if(minutos==5 && segundos > 0){
             dados.permissao=2;
             broadcast(&dados,sizeof(data));
         }
@@ -116,11 +123,32 @@ int main()
         //mensagem nova
         if (msg_ret.status == MESSAGE_OK) {
 
-            if(dados_aux.id==0 && dados_aux.permissao == 2){
+
+            if(dados_aux.id==0 && dados_aux.permissao == 10 ){
                 start=time(NULL);
                 flagBoladona=1;
-                //printf("ok\n");
+                dados.mens=2;
+                broadcast(&dados,sizeof(data));
+                
+            }    
+            if(dados_aux.mens==1){
+                strcpy(str_buffer,client_names[dados_aux.id]);
+                strcat(str_buffer,": ");
+                strcat(str_buffer,dados_aux.texto);
+                strcpy(dados.texto,str_buffer);
+                dados.mens=1;
+                printf("aa %s\n", dados_aux.texto);
+                printf("ss %s\n", dados.texto );
+                broadcast(&dados,sizeof(data));
+                dados_aux.mens=0;
+                dados.mens=0;
+                arq = fopen("AllegroAquar/Resources/Arquivos/chat.txt","a");
+                fprintf(arq, "%s\n",str_buffer);
+                fclose(arq);
+                strcpy(str_buffer,"");
             }
+
+            
             
             if(dados_aux.tecla == 85){ // up
 
@@ -229,7 +257,7 @@ int main()
                                 dados.y_aux = dados_aux.Y+i;
                                 break;
                             }
-                            else if (map[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='l' && dados_aux.tamanho > 1){
+                            else if (map[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='g' && dados_aux.tamanho > 1){
                                 marcacao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+5;
                                 dados.x_aux=(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
@@ -262,7 +290,7 @@ int main()
                                 break;
                                 
                             }
-                            else if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='l' && dados_aux.tamanho > 1){
+                            else if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='g' && dados_aux.tamanho > 1){
                                 marcacao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+5;
                                 dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
@@ -316,6 +344,7 @@ int main()
                 flagBoladona=0;
             }
             vivos[msg_ret.client_id]=1;
+            strcpy(client_names[msg_ret.client_id],"");
             tamanho[msg_ret.client_id]=0;
             fome[msg_ret.client_id]=0;
             dados.id=msg_ret.client_id;
@@ -383,7 +412,7 @@ int main()
 
                     if(marcacao[y][x] == 32){
                     dados.id=7;
-                    marcacao[y][x] = 'g';
+                    marcacao[y][x] = 't';
                     //printf("armadilha aparece\n");
                    }
                 }
