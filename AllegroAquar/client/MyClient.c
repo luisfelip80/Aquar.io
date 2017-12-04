@@ -708,6 +708,7 @@ bool lobbyMenu(){
 				        }
 				        // se houver mensagem, ler os dados:
 				        else if (mens != NO_MESSAGE) {
+
 							if(dados_aux.mens==2){
 								cred=true;
 								lobby_flag=true;
@@ -716,7 +717,8 @@ bool lobbyMenu(){
                 	}
                 }
                 else if(evento_lobby.mouse.x > 488 && evento_lobby.mouse.x < 630 && evento_lobby.mouse.y > 245 && evento_lobby.mouse.y <322){
-                	if(id==0){
+                	
+                    if(id==0){
                 		dados.id=id;
                 		dados.permissao=10;
                 		sendMsgToServer((void *)&dados,sizeof(data));
@@ -727,11 +729,28 @@ bool lobbyMenu(){
 				        }
 				        // se houver mensagem, ler os dados:
 				        else if (mens != NO_MESSAGE) {
+
 							if(dados_aux.mens==2){
 								lobby_flag=true;
 							}	        	
 				        }
                 	}
+                    else {
+                        while(dados_aux.mens!=2){
+                            int mens = recvMsgFromServer(&dados_aux,WAIT_FOR_IT);
+                            // se receber server diconect, acaba com a função
+                            if (mens == SERVER_DISCONNECTED) {
+                              return false;
+                            }
+                            // se houver mensagem, ler os dados:
+                            else if (mens != NO_MESSAGE) {
+
+                                if(dados_aux.mens==2){
+                                    lobby_flag=true;
+                                }               
+                            }
+                        }   
+                    }
 
                 }   
         	}                                         
