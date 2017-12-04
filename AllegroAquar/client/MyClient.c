@@ -783,11 +783,11 @@ bool lobbyMenu(){
         }
         if(!lobby_flag){
             al_draw_bitmap(lobby, 0, 0, 0);        
-            al_draw_text(fonteChat, al_map_rgb(0,0,0),130,210,al_get_font_ascent(fonteChat), str);
+            al_draw_text(fonteChat, al_map_rgb(0,0,0),130,210,ALLEGRO_ALIGN_CENTRE +al_get_font_ascent(fonteChat), str);
             for(i = 0; i < MAX_LOG_SIZE; ++i){
-                al_draw_text(fonteChat, al_map_rgb(0, 0, 0), 63, 200 - (i*al_get_font_ascent(fonteChat)), al_get_font_ascent(fonteChat), str_buffer[i]);
+                al_draw_text(fonteChat, al_map_rgb(0, 0, 0), 63, 200 - (i*al_get_font_ascent(fonteChat)), ALLEGRO_ALIGN_CENTRE +al_get_font_ascent(fonteChat), str_buffer[i]);
             }
-            al_draw_text(fonteChat, al_map_rgb(0,0,0),63,210,al_get_font_ascent(fonteChat), "Mensagem:");
+            al_draw_text(fonteChat, al_map_rgb(0,0,0),63,210,ALLEGRO_ALIGN_CENTRE +al_get_font_ascent(fonteChat), "Mensagem:");
             al_flip_display();
         }            
     }  

@@ -276,6 +276,16 @@ int main()
                                         break;    
                                     }
                             }
+                            for(k=0;k<6;k++){
+                                if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]== pers[k] && dados_aux.fome >= fome[k]+30){
+                                    
+                                    fome[dados_aux.id] = dados_aux.fome+15;
+                                    fome [k] = -1;
+                                    dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                    dados.y_aux=dados_aux.Y+i;
+                                    break;    
+                                }
+                            }
                         }
                     }
                         if(fome[dados_aux.id] > dados_aux.fome)
@@ -311,7 +321,6 @@ int main()
                                 
                             }
                             for(k=0;k<6;k++){
-
                                 if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]== pers[k] && dados_aux.fome >= fome[k]+30){
                                     
                                     fome[dados_aux.id] = dados_aux.fome+15;
