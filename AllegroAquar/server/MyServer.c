@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <stdlib.h>
 
 
 #define MSG_MAX_SIZE 350
@@ -21,8 +22,7 @@ typedef struct {
 
 data dados;
 int clock_a=0,c2=0;
-int x,y;
-int x_player[6],y_player[6];
+int x,y,t, x_player[6],y_player[6];
 int vivos[6] = {1,1,1,1,1,1};
 int correcaoTamanho_X[5] = {7,24,38,50,62};
 int correcaoTamanho_Y[5] = {17,28,36,46,53};
@@ -265,11 +265,23 @@ int main()
                                 break;
                                 
                             }
+                            for(k=0;k<6;k++){
+
+                                    if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])+j]== pers[k] && dados_aux.fome >= fome[k]+30){
+                                        
+                                        fome[dados_aux.id] = dados_aux.fome+15;
+                                        fome [k] = -1;
+                                        dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])+j;
+                                        dados.y_aux=dados_aux.Y+i;
+                                        break;    
+                                    }
+                            }
                         }
+                    }
                         if(fome[dados_aux.id] > dados_aux.fome)
                                 break;
-                    }   
-                }
+                }   
+            }
                 else if(dados_aux.direcao ==1 && dados_aux.X-10 >= 10 ){
                     dados.X= dados_aux.X-10;
                     dados.Y = dados_aux.Y;
@@ -298,23 +310,22 @@ int main()
                                 break;
                                 
                             }
-                            
                             for(k=0;k<6;k++){
-                                if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]==pers[k] && dados_aux.fome >= fome[k]+30){
+
+                                if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]== pers[k] && dados_aux.fome >= fome[k]+30){
                                     
                                     fome[dados_aux.id] = dados_aux.fome+15;
                                     fome [k] = -1;
                                     dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
                                     dados.y_aux=dados_aux.Y+i;
-                                    break;
-                                    
+                                    break;    
                                 }
                             }
                         }
                         if(fome[dados_aux.id] > dados_aux.fome)
                                 break;
                     }   
-                }
+                
                 dados.fome=fome[dados_aux.id];
                 if(dados.fome > 30 && dados.fome <= 60){
                     tamanho[dados_aux.id]=1;

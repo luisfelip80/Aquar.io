@@ -15,3 +15,18 @@ luis: 72.20.4.35
 luis: luis
 luis: 172.20.4.35
 luis: luis
+: 172.20.4.35
+AsmoDio: 172.20.4.35
+AsmoDio: AsmoDio
+luis: 72.20.4.35
+luis: luis
+AsmoDio: Humilde
+jose: 172.20.4.35
+jose: jose
+jose: vou da rum pau em vcs
+luis: 72.20.4.35
+luis: luis
+luis: 72.20.4.35
+luis: luis
+lls: 72.20.4.35
+lls: lls
