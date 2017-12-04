@@ -198,9 +198,7 @@ int main()
                     dados.X= dados_aux.X+10;
                     dados.Y = dados_aux.Y;
                     dados.id = dados_aux.id;
-
                     dados.fome=fome[dados_aux.id];
-                    
                     dados.tecla= dados_aux.tecla;
                     dados.pers = dados_aux.pers;
                     dados.tamanho = tamanho [dados_aux.id];
@@ -276,22 +274,12 @@ int main()
                                         break;    
                                     }
                             }
-                            for(k=0;k<6;k++){
-                                if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]== pers[k] && dados_aux.fome >= fome[k]+30){
-                                    
-                                    fome[dados_aux.id] = dados_aux.fome+15;
-                                    fome [k] = -1;
-                                    dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
-                                    dados.y_aux=dados_aux.Y+i;
-                                    break;    
-                                }
-                            }
                         }
                     }
                         if(fome[dados_aux.id] > dados_aux.fome)
                                 break;
                 }   
-            }
+            
                 else if(dados_aux.direcao ==1 && dados_aux.X-10 >= 10 ){
                     dados.X= dados_aux.X-10;
                     dados.Y = dados_aux.Y;
@@ -333,7 +321,9 @@ int main()
                         }
                         if(fome[dados_aux.id] > dados_aux.fome)
                                 break;
-                    }   
+                    }
+                
+                }
                 
                 dados.fome=fome[dados_aux.id];
                 if(dados.fome > 30 && dados.fome <= 60){
@@ -352,8 +342,9 @@ int main()
                 y_player[dados_aux.id] = dados.Y;
                 dados.tamanho=tamanho[dados_aux.id];
                 //printf("yb %d xb %d \n", dados.y_aux,  dados.x_aux);
-                broadcast(&dados, sizeof(data)); 
-            }
+                broadcast(&dados, sizeof(data));
+            } 
+            
         } 
         else if (msg_ret.status == DISCONNECT_MSG) {
             sprintf(str_buffer, "%s disconnected", client_names[msg_ret.client_id]);

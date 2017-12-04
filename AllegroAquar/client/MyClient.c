@@ -307,7 +307,7 @@ void runGame() {
             al_get_next_event(fila_eventos, &evento);
             if (evento.type == ALLEGRO_EVENT_KEY_DOWN){
                 dados.tecla = evento.keyboard.keycode;
-                //printf("%d\n",dados.tecla );
+                printf("%d\n",dados.tecla );
                 dados.id=id;
                 dados.X=x;
                 dados.Y=y;
@@ -348,6 +348,7 @@ void runGame() {
                     ant_dir[dados.id]=1;
                 }
                 else if(dados.tecla==23){
+                    printf("ok\n");
                     //printf("y %d x %d \n",dados.y_aux,dados.x_aux );
                     marcaPosicao(x,y,dados.X,dados.Y, Peixe_eu,dados.direcao,1,dados.tamanho);
                     //printf("antes - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
@@ -370,17 +371,17 @@ void runGame() {
             if(dados.permissao == 1 && id != dados.id && dados.id != 6 && vivos[dados.id] == 1){
                 if(vivos[dados.id] == 1){
 
-                    if(dados.tecla==83 && dados.tecla > 0){
+                    if(dados.tecla==83){
                         marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,0,0,dados.tamanho);
                         ant_dir[dados.id]=0;
                     }
                     //pritar peixe na direção que ele andar
-                    else if(dados.tecla==82 && dados.tecla > 0){
+                    else if(dados.tecla==82){
                         marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,1,0,dados.tamanho);
                         ant_dir[dados.id]=1;
                     }
-                    else if(dados.tecla==23 && dados.tecla > 0){
-
+                    else if(dados.tecla==23){
+                        printf("ok\n");
                         marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,dados.direcao,1,dados.tamanho);
                         //printf("antes - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
                         marcacao[dados.y_aux] [dados.x_aux]=32;
