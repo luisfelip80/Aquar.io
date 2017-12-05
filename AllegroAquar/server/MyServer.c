@@ -25,7 +25,7 @@ int x,y;
 int x_player[6],y_player[6];
 int vivos[6] = {1,1,1,1,1,1};
 int correcaoTamanho_X[5] = {7,24,38,50,62};
-int correcaoTamanho_Y[5] = {17,28,36,46,53};
+int correcaoTamanho_Y[5] = {10,20,30,40,50};
 int tamanho[6] = {0,0,0,0,0,0};
 int fome[6] = {0,0,0,0,0,0};
 int bx=1,by=0;
@@ -248,13 +248,21 @@ int main()
                     dados.direcao = dados_aux.direcao;
                     marcaPosicao(dados_aux.X,dados_aux.Y,dados.X,dados.Y, pers[dados_aux.id],dados_aux.id);
                     dados.permissao=1;
-                    for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho]+5 && dados_aux.Y+i < ALTURA_TELA;i++){
+                    for(i=1;i<correcaoTamanho_Y[dados_aux.tamanho] && dados_aux.Y+i < ALTURA_TELA;i++){
                         for(j=1;j<=11;j++){
                             if(marcacao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='r'){
                                 marcacao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+1;
                                 dados.x_aux = (dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
                                 dados.y_aux = dados_aux.Y+i;
+                                dados.mens =3;
+                                break;
+                            }
+                            else if(marcacao[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='r'){
+                                marcacao[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
+                                fome[dados_aux.id] = dados_aux.fome+1;
+                                dados.x_aux = (dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
+                                dados.y_aux = dados_aux.Y-i;
                                 dados.mens =3;
                                 break;
                             }
@@ -294,7 +302,14 @@ int main()
                                 dados.y_aux = dados_aux.Y+i;
                                 dados.mens=3;
                                 break;
-                                
+                            }
+                            else if(marcacao[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='r'){
+                                marcacao[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=32;
+                                fome[dados_aux.id] = dados_aux.fome+1;
+                                dados.x_aux = (dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                dados.y_aux = dados_aux.Y-i;
+                                dados.mens=3;
+                                break;
                             }
                             else if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='g' && dados_aux.tamanho > 1){
                                 marcacao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=32;

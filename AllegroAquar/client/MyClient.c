@@ -77,7 +77,7 @@ int id,Peixe_eu=0;
 int xA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1},yA[13]={1,1,1,1,1,1,1,1,1,1,1,1,1};
 int x,y,indicador_X_Bit=0,indicador_Y_Bit=0;
 int correcaoTamanho_X[5] = {7,24,38,50,62};
-int correcaoTamanho_Y[5] = {17,28,36,46,53};
+int correcaoTamanho_Y[5] = {10,20,30,40,50};
 int x_bit[2][5] = {{0,160,320,480,640},{1440,1280,1120,960,800}},y_bit[5] = {0,129,260,391,522};
 int x_bit_isca[10]={0,77,154,231,308,385,462,539,616,693},xi=0;
 char res[2]={32,'\0'};
@@ -126,9 +126,9 @@ int main() {
     if (!Choice()){
         return 0;
     }
-    if (!lobbyMenu()){
-        return 0;
-    }
+    //if (!lobbyMenu()){
+      //  return 0;
+    //}
     //while(!sair) {
         // roda game.
         runGame();
@@ -213,16 +213,18 @@ void mostraTela(int primeiro_X){
             if(marcacao[i] [j] == 'L'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [0][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-89,i-65,0);
-                
+                al_draw_rectangle(j+correcaoTamanho_X[matriz_tamanho[i][j]], i +correcaoTamanho_Y[matriz_tamanho[i][j]], j+correcaoTamanho_X[matriz_tamanho[i][j]]+10, i-correcaoTamanho_Y[matriz_tamanho[i][j]],al_map_rgb(255,0,0),0);            
             }
             else if(marcacao[i] [j] == 'l'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [1][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-89,i-65,0);
 
+
             }
             else if(marcacao[i] [j] == 'P'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [1][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-70,i-65,0);
+                al_draw_rectangle(j-correcaoTamanho_X[matriz_tamanho[i][j]], i+correcaoTamanho_Y[matriz_tamanho[i][j]], j-correcaoTamanho_X[matriz_tamanho[i][j]]-10, i-correcaoTamanho_Y[matriz_tamanho[i][j]],al_map_rgb(255,0,0),0);
 
             }
             else if(marcacao[i] [j] == 'p'){
