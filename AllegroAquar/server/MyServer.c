@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include <stdlib.h>
 
 
 #define MSG_MAX_SIZE 350
@@ -22,14 +21,15 @@ typedef struct {
 
 data dados;
 int clock_a=0,c2=0;
-int x,y,t, x_player[6],y_player[6];
+int x,y;
+int x_player[6],y_player[6];
 int vivos[6] = {1,1,1,1,1,1};
 int correcaoTamanho_X[5] = {7,24,38,50,62};
 int correcaoTamanho_Y[5] = {17,28,36,46,53};
 int tamanho[6] = {0,0,0,0,0,0};
 int fome[6] = {0,0,0,0,0,0};
 int bx=1,by=0;
-char map [ALTURA_TELA] [LARGURA_TELA],marcacao [ALTURA_TELA] [LARGURA_TELA];
+char marc[ALTURA_TELA] [LARGURA_TELA],map [ALTURA_TELA] [LARGURA_TELA],marcacao [ALTURA_TELA] [LARGURA_TELA];
 int jogadores [ALTURA_TELA] [LARGURA_TELA];
 data dados;
 int posi_inic_x[6] = {10,110,210,310,410,510},posi_inic_y = 440;
@@ -198,7 +198,9 @@ int main()
                     dados.X= dados_aux.X+10;
                     dados.Y = dados_aux.Y;
                     dados.id = dados_aux.id;
+
                     dados.fome=fome[dados_aux.id];
+                    
                     dados.tecla= dados_aux.tecla;
                     dados.pers = dados_aux.pers;
                     dados.tamanho = tamanho [dados_aux.id];
@@ -253,6 +255,7 @@ int main()
                                 fome[dados_aux.id] = dados_aux.fome+1;
                                 dados.x_aux = (dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
                                 dados.y_aux = dados_aux.Y+i;
+                                dados.mens =3;
                                 break;
                             }
                             else if (map[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='g' && dados_aux.tamanho > 1){
@@ -260,26 +263,18 @@ int main()
                                 fome[dados_aux.id] = dados_aux.fome+5;
                                 dados.x_aux=(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
                                 dados.y_aux=dados_aux.Y+i;
+                                dados.mens=3;
                                 break;
                                 
                             }
-                            for(k=0;k<6;k++){
-
-                                    if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])+j]== pers[k] && dados_aux.fome >= fome[k]+30){
-                                        
-                                        fome[dados_aux.id] = dados_aux.fome+15;
-                                        fome [k] = -1;
-                                        dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])+j;
-                                        dados.y_aux=dados_aux.Y+i;
-                                        break;    
-                                    }
+                            else {
+                                dados.mens=0;
                             }
                         }
-                    }
                         if(fome[dados_aux.id] > dados_aux.fome)
                                 break;
-                }   
-            
+                    }   
+                }
                 else if(dados_aux.direcao ==1 && dados_aux.X-10 >= 10 ){
                     dados.X= dados_aux.X-10;
                     dados.Y = dados_aux.Y;
@@ -297,6 +292,7 @@ int main()
                                 fome[dados_aux.id] = dados_aux.fome+1;
                                 dados.x_aux = (dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
                                 dados.y_aux = dados_aux.Y+i;
+                                dados.mens=3;
                                 break;
                                 
                             }
@@ -305,26 +301,34 @@ int main()
                                 fome[dados_aux.id] = dados_aux.fome+5;
                                 dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
                                 dados.y_aux=dados_aux.Y+i;
+                                dados.mens=3;
                                 break;
                                 
                             }
+                            else {
+                                dados.mens=0;
+                            }
+                            
                             for(k=0;k<6;k++){
-                                if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]== pers[k] && dados_aux.fome >= fome[k]+30){
+                                if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]==pers[k] && dados_aux.fome >= fome[k]+30){
                                     
                                     fome[dados_aux.id] = dados_aux.fome+15;
                                     fome [k] = -1;
                                     dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
                                     dados.y_aux=dados_aux.Y+i;
-                                    break;    
+                                    dados.permissao=1;
+                                    break;
+                                    
+                                }
+                                else {
+                                    dados.mens=0;
                                 }
                             }
                         }
                         if(fome[dados_aux.id] > dados_aux.fome)
                                 break;
-                    }
-                
+                    }   
                 }
-                
                 dados.fome=fome[dados_aux.id];
                 if(dados.fome > 30 && dados.fome <= 60){
                     tamanho[dados_aux.id]=1;
@@ -342,9 +346,8 @@ int main()
                 y_player[dados_aux.id] = dados.Y;
                 dados.tamanho=tamanho[dados_aux.id];
                 //printf("yb %d xb %d \n", dados.y_aux,  dados.x_aux);
-                broadcast(&dados, sizeof(data));
-            } 
-            
+                broadcast(&dados, sizeof(data)); 
+            }
         } 
         else if (msg_ret.status == DISCONNECT_MSG) {
             sprintf(str_buffer, "%s disconnected", client_names[msg_ret.client_id]);
@@ -365,7 +368,7 @@ int main()
             vivos[msg_ret.client_id]=0;            
             broadcast(&dados,sizeof(data));
         }
-        if(clock_a == 350){
+        if(clock_a == 500){
             //printf("ok\n"); 
             clock_a=0;
             bx++;
@@ -376,10 +379,8 @@ int main()
             GeraPosicao();
             dados.x_aux=x;
             dados.y_aux=y;
-
-            if(marcacao[y] [x] == 32){
+            if(marcacao[y] [x] ==32)
                 marcacao[y] [x] = 'r';
-            }
             for(k=0;k<6;k++){
                 if (fome[k]==-1){
                     dados.id=k;

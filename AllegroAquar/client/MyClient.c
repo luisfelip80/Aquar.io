@@ -307,7 +307,7 @@ void runGame() {
             al_get_next_event(fila_eventos, &evento);
             if (evento.type == ALLEGRO_EVENT_KEY_DOWN){
                 dados.tecla = evento.keyboard.keycode;
-                printf("%d\n",dados.tecla );
+                //printf("%d\n",dados.tecla );
                 dados.id=id;
                 dados.X=x;
                 dados.Y=y;
@@ -320,7 +320,7 @@ void runGame() {
             else if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             sair = true; 
             return;
-            }
+            }   
             //mostraTela(x_bit[bx],y_bit[by]);
         }
         // receber mensagem do servidor
@@ -348,11 +348,12 @@ void runGame() {
                     ant_dir[dados.id]=1;
                 }
                 else if(dados.tecla==23){
-                    printf("ok\n");
                     //printf("y %d x %d \n",dados.y_aux,dados.x_aux );
                     marcaPosicao(x,y,dados.X,dados.Y, Peixe_eu,dados.direcao,1,dados.tamanho);
                     //printf("antes - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
-                    marcacao[dados.y_aux] [dados.x_aux]=32;
+                    if(dados.mens==3){
+                        marcacao[dados.y_aux] [dados.x_aux]=32;
+                    }
                     //printf("depos - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
                     fome=dados.fome;
                     tamanho = dados.tamanho;
@@ -371,20 +372,22 @@ void runGame() {
             if(dados.permissao == 1 && id != dados.id && dados.id != 6 && vivos[dados.id] == 1){
                 if(vivos[dados.id] == 1){
 
-                    if(dados.tecla==83){
+                    if(dados.tecla==83 && dados.tecla > 0){
                         marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,0,0,dados.tamanho);
                         ant_dir[dados.id]=0;
                     }
                     //pritar peixe na direção que ele andar
-                    else if(dados.tecla==82){
+                    else if(dados.tecla==82 && dados.tecla > 0){
                         marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,1,0,dados.tamanho);
                         ant_dir[dados.id]=1;
                     }
-                    else if(dados.tecla==23){
-                        printf("ok\n");
+                    else if(dados.tecla==23 && dados.tecla > 0){
+
                         marcaPosicao(xA[dados.id],yA[dados.id],dados.X,dados.Y,dados.pers,dados.direcao,1,dados.tamanho);
                         //printf("antes - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
-                        marcacao[dados.y_aux] [dados.x_aux]=32;
+                        if(dados.mens==3){
+                            marcacao[dados.y_aux] [dados.x_aux]=32;
+                        }
                         //printf("depos - %c\n", marcacao[dados.y_aux] [dados.x_aux]);
                     }
 
@@ -709,7 +712,6 @@ bool lobbyMenu(){
 				        }
 				        // se houver mensagem, ler os dados:
 				        else if (mens != NO_MESSAGE) {
-
 							if(dados_aux.mens==2){
 								cred=true;
 								lobby_flag=true;
@@ -718,8 +720,7 @@ bool lobbyMenu(){
                 	}
                 }
                 else if(evento_lobby.mouse.x > 488 && evento_lobby.mouse.x < 630 && evento_lobby.mouse.y > 245 && evento_lobby.mouse.y <322){
-                	
-                    if(id==0){
+                	if(id==0){
                 		dados.id=id;
                 		dados.permissao=10;
                 		sendMsgToServer((void *)&dados,sizeof(data));
@@ -730,28 +731,11 @@ bool lobbyMenu(){
 				        }
 				        // se houver mensagem, ler os dados:
 				        else if (mens != NO_MESSAGE) {
-
 							if(dados_aux.mens==2){
 								lobby_flag=true;
 							}	        	
 				        }
                 	}
-                    else {
-                        while(dados_aux.mens!=2){
-                            int mens = recvMsgFromServer(&dados_aux,WAIT_FOR_IT);
-                            // se receber server diconect, acaba com a função
-                            if (mens == SERVER_DISCONNECTED) {
-                              return false;
-                            }
-                            // se houver mensagem, ler os dados:
-                            else if (mens != NO_MESSAGE) {
-
-                                if(dados_aux.mens==2){
-                                    lobby_flag=true;
-                                }               
-                            }
-                        }   
-                    }
 
                 }   
         	}                                         
@@ -784,11 +768,11 @@ bool lobbyMenu(){
         }
         if(!lobby_flag){
             al_draw_bitmap(lobby, 0, 0, 0);        
-            al_draw_text(fonteChat, al_map_rgb(0,0,0),130,210,ALLEGRO_ALIGN_CENTRE +al_get_font_ascent(fonteChat), str);
+            al_draw_text(fonteChat, al_map_rgb(0,0,0),130,210,al_get_font_ascent(fonteChat), str);
             for(i = 0; i < MAX_LOG_SIZE; ++i){
-                al_draw_text(fonteChat, al_map_rgb(0, 0, 0), 63, 200 - (i*al_get_font_ascent(fonteChat)), ALLEGRO_ALIGN_CENTRE +al_get_font_ascent(fonteChat), str_buffer[i]);
+                al_draw_text(fonteChat, al_map_rgb(0, 0, 0), 63, 200 - (i*al_get_font_ascent(fonteChat)), al_get_font_ascent(fonteChat), str_buffer[i]);
             }
-            al_draw_text(fonteChat, al_map_rgb(0,0,0),63,210,ALLEGRO_ALIGN_CENTRE +al_get_font_ascent(fonteChat), "Mensagem:");
+            al_draw_text(fonteChat, al_map_rgb(0,0,0),63,210,al_get_font_ascent(fonteChat), "Mensagem:");
             al_flip_display();
         }            
     }  
