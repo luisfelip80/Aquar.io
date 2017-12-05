@@ -33,6 +33,7 @@ ALLEGRO_BITMAP *peixe4 = NULL;
 ALLEGRO_BITMAP *racao = NULL;
 ALLEGRO_BITMAP *isca = NULL;
 ALLEGRO_BITMAP *isca_a = NULL;
+ALLEGRO_BITMAP *isca_t = NULL;
 ALLEGRO_BITMAP *armario = NULL;
 ALLEGRO_BITMAP *sacos = NULL;
 ALLEGRO_BITMAP *personagem_1 = NULL;
@@ -202,16 +203,15 @@ void mostraTela(int primeiro_X){
     for(i=0;i<ALTURA_TELA;i++){
         for(j=0;j<LARGURA_TELA;j++){
 
-
             if(marcacao[i] [j] == 'g'){
                 isca_a = al_create_sub_bitmap(isca, x_bit_isca [xi],0, 77,76);
                 al_draw_bitmap(isca_a, j-38,i-37,0);
             }
-            if(marcacao[i] [j] == 't'){
-                isca_a = al_create_sub_bitmap(isca, x_bit_isca [xi],0, 77,76);
-                al_draw_bitmap(isca_a, j-38,i-37,0);
+            else if(marcacao[i] [j] == 't'){
+                isca_t = al_create_sub_bitmap(isca, x_bit_isca [xi],0, 77,76);
+                al_draw_bitmap(isca_t, j-38,i-37,0);
             }
-            if (marcacao[i] [j] == 'w'){
+            else if (marcacao[i] [j] == 'w'){
                 al_draw_bitmap(racao, j-2,i-2,0);
             }
             
@@ -431,29 +431,14 @@ void runGame() {
                     bx=dados.xb;
                 }
 
-                 if(dados.id==7){
-                    for(k=0;k<2;k++){
-	                    for(j=0;j<2;j++){
-		                    for(i=0;i<5;i++){       	
-		                    	if(marcacao[dados.y_aux] [dados.x_aux] != pers[k][j][i]){
-		                    	marcacao[dados.y_aux] [dados.x_aux] = 'g';
-		                    	}	
-		                    }
-	                	}
-                    }
+                 if(dados.id==7 && dados.mens == 5){
+                    
+		              marcacao[dados.y_aux] [dados.x_aux] = 'g';
                 }
 
 
-                 if(dados.id==8){
-                    for(k=0;k<2;k++){
-	                    for(j=0;j<2;j++){
-		                    for(i=0;i<5;i++){       	
-		                    	if(marcacao[dados.y_aux] [dados.x_aux] != pers[k][j][i]){
-		                    	marcacao[dados.y_aux] [dados.x_aux] = 't';
-		                    	}	
-		                    }
-	                	}
-                    }
+                 if(dados.id==8 && dados.mens == 5){
+		            marcacao[dados.y_aux] [dados.x_aux] = 't'; 
                 }
         }
         mostraTela(bx);
@@ -744,7 +729,7 @@ bool lobbyMenu(){
                     else {
                         
                         while(dados_aux.mens!=2){
-                            
+
                             int mens = recvMsgFromServer(&dados_aux,WAIT_FOR_IT);
                             // se receber server diconect, acaba com a função
                             if (mens == SERVER_DISCONNECTED) {
