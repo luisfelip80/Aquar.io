@@ -302,30 +302,32 @@ int main()
                                 break;
                             
                             }
+                            else if (jogadores[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]!=32 && dados_aux.fome >= fome[k]+25){
+                                k = jogadores[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j];
+                                fome[dados_aux.id] = dados_aux.fome+ (fome[k]/2);
+                                fome [k] = -1;
+                                dados.x_aux=(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
+                                dados.y_aux=dados_aux.Y+i;
+                                dados.mens=3;
+                                jogadores[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=0;
+                                break;
+                                
+                            }
+                            else if (jogadores[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]!=32 && dados_aux.fome >= fome[k]+25){
+                                k = jogadores[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j];
+                                jogadores[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=0;
+                                fome[dados_aux.id] = dados_aux.fome+ (fome[k]/2);
+                                fome [k] = -1;
+                                dados.x_aux=(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
+                                dados.y_aux=dados_aux.Y-i;
+                                dados.mens=3;
+                                break;
+                                
+                            }
+
                             else {
                                 dados.mens=0;
-                            }
-                            for(k=0;k<6;k++){
-                                if (jogadores[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]==k && dados_aux.fome >= fome[k]+25){
-                                    jogadores[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=0;
-                                    fome[dados_aux.id] = dados_aux.fome+ (fome[k]/2);
-                                    fome [k] = -1;
-                                    dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
-                                    dados.y_aux=dados_aux.Y+i;
-                                    dados.mens=3;
-                                    break;
-                                    
-                                }
-                                if (jogadores[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]==k && dados_aux.fome >= fome[k]+25){
-                                    jogadores[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=0;
-                                    fome[dados_aux.id] = dados_aux.fome+ (fome[k]/2);
-                                    fome [k] = -1;
-                                    dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
-                                    dados.y_aux=dados_aux.Y-i;
-                                    dados.mens=3;
-                                    break;
-                                    
-                                }
+                                k=0;
                             }
 
                         }
@@ -393,35 +395,37 @@ int main()
                                 dados.mens =3;
                                 break;
                             }
+                            
+                            else if (jogadores[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j] != 32 && dados_aux.fome >= fome[k]+25){
+                                k=jogadores[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j];
+                                fome[dados_aux.id] = dados_aux.fome+ (fome[k]/2);
+                                fome [k] = -1;
+                                dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                dados.y_aux=dados_aux.Y+i;
+                                dados.mens=3;
+                                jogadores[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=0;
+
+                                printf("ok -- \n");
+                                break;
+                                
+                            }
+                            else if (jogadores[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j] !=32 && dados_aux.fome >= fome[k]+25){
+                                k = jogadores[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j];
+                                fome[dados_aux.id] = dados_aux.fome+ (fome[k]/2);
+                                fome [k] = -1;
+                                dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                dados.y_aux=dados_aux.Y-i;
+                                jogadores[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=0;
+                                dados.mens=3;
+                                printf("ok -- \n");
+                                break;
+                                
+                            }
                             else {
                                 dados.mens=0;
+                                k=0;
                             }
                             
-                            for(k=0;k<6;k++){
-
-                                if (jogadores[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]== k && dados_aux.fome >= fome[k]+25){
-                                    jogadores[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=0;
-                                    fome[dados_aux.id] = dados_aux.fome+ (fome[k]/2);
-                                    fome [k] = -1;
-                                    dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
-                                    dados.y_aux=dados_aux.Y+i;
-                                    dados.mens=3;
-                                    printf("ok -- \n");
-                                    break;
-                                    
-                                }
-                                else if (jogadores[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]==k && dados_aux.fome >= fome[k]+25){
-                                    jogadores[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=0;
-                                    fome[dados_aux.id] = dados_aux.fome+ (fome[k]/2);
-                                    fome [k] = -1;
-                                    dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
-                                    dados.y_aux=dados_aux.Y-i;
-                                    dados.mens=3;
-                                    printf("ok -- \n");
-                                    break;
-                                    
-                                }
-                            }
                         }
                         if(fome[dados_aux.id] != dados_aux.fome)
                                 break;

@@ -938,7 +938,6 @@ bool inicializar(){
         fprintf(stderr, "Falha ao inicializar add-on allegro_ttf.\n");
         return false;
     }
-    al_init_primitives_addon();
     
     if (!al_init_primitives_addon()){
         fprintf(stderr, "Falha ao inicializar primitives\n");
