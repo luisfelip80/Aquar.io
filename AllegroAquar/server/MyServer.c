@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <stdlib.h>
+
 
 
 #define MSG_MAX_SIZE 350
@@ -266,18 +268,66 @@ int main()
                                 dados.mens =3;
                                 break;
                             }
-                            else if (map[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='g' && dados_aux.tamanho > 1){
+                            else if(marcacao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='g'){
                                 marcacao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+5;
-                                dados.x_aux=(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
-                                dados.y_aux=dados_aux.Y+i;
-                                dados.mens=3;
+                                dados.x_aux = (dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
+                                dados.y_aux = dados_aux.Y+i;
+                                dados.mens =3;
                                 break;
-                                
+                            }
+                            else if(marcacao[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='g'){
+                                marcacao[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
+                                fome[dados_aux.id] = dados_aux.fome+5;
+                                dados.x_aux = (dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
+                                dados.y_aux = dados_aux.Y-i;
+                                dados.mens =3;
+                                break;
+                            
+                            }
+                            else if(marcacao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='t'){
+                                marcacao[dados_aux.Y+i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
+                                fome[dados_aux.id] = dados_aux.fome-5;
+                                dados.x_aux = (dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
+                                dados.y_aux = dados_aux.Y+i;
+                                dados.mens =3;
+                                break;
+                            }
+                            else if(marcacao[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=='t'){
+                                marcacao[dados_aux.Y-i] [(dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j]=32;
+                                fome[dados_aux.id] = dados_aux.fome-5;
+                                dados.x_aux = (dados_aux.X+correcaoTamanho_X[dados_aux.tamanho])+j;
+                                dados.y_aux = dados_aux.Y-i;
+                                dados.mens =3;
+                                break;
+                            
                             }
                             else {
                                 dados.mens=0;
                             }
+                            for(k=0;k<6;k++){
+                                if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]==pers[k] && dados_aux.fome >= fome[k]+30){
+                                    
+                                    fome[dados_aux.id] = dados_aux.fome+5;
+                                    fome [k] = -1;
+                                    dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                    dados.y_aux=dados_aux.Y+i;
+                                    dados.mens=3;
+                                    break;
+                                    
+                                }
+                                if (map[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]==pers[k] && dados_aux.fome >= fome[k]+30){
+                                    
+                                    fome[dados_aux.id] = dados_aux.fome+5;
+                                    fome [k] = -1;
+                                    dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                    dados.y_aux=dados_aux.Y-i;
+                                    dados.mens=3;
+                                    break;
+                                    
+                                }
+                            }
+
                         }
                         if(fome[dados_aux.id] > dados_aux.fome)
                                 break;
@@ -300,7 +350,7 @@ int main()
                                 fome[dados_aux.id] = dados_aux.fome+1;
                                 dados.x_aux = (dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
                                 dados.y_aux = dados_aux.Y+i;
-                                dados.mens=3;
+                                dados.mens =3;
                                 break;
                             }
                             else if(marcacao[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='r'){
@@ -308,17 +358,41 @@ int main()
                                 fome[dados_aux.id] = dados_aux.fome+1;
                                 dados.x_aux = (dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
                                 dados.y_aux = dados_aux.Y-i;
-                                dados.mens=3;
+                                dados.mens =3;
                                 break;
                             }
-                            else if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='g' && dados_aux.tamanho > 1){
+                            else if(marcacao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='g'){
                                 marcacao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=32;
                                 fome[dados_aux.id] = dados_aux.fome+5;
-                                dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
-                                dados.y_aux=dados_aux.Y+i;
-                                dados.mens=3;
+                                dados.x_aux = (dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                dados.y_aux = dados_aux.Y+i;
+                                dados.mens =3;
                                 break;
-                                
+                            }
+                            else if(marcacao[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='g'){
+                                marcacao[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=32;
+                                fome[dados_aux.id] = dados_aux.fome+5;
+                                dados.x_aux = (dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                dados.y_aux = dados_aux.Y-i;
+                                dados.mens =3;
+                                break;
+                            }
+                            else if(marcacao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='t'){
+                                marcacao[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=32;
+                                fome[dados_aux.id] = dados_aux.fome-5;
+                                dados.x_aux = (dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                dados.y_aux = dados_aux.Y+i;
+                                dados.mens =3;
+                                break;
+                            }
+                            else if(marcacao[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=='t'){
+                                marcacao[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=32;
+                                fome[dados_aux.id] = dados_aux.fome-5;
+                                dados.x_aux = (dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                dados.y_aux = dados_aux.Y-i;
+                                dados.mens =3;
+                                break;
+                            
                             }
                             else {
                                 dados.mens=0;
@@ -327,16 +401,23 @@ int main()
                             for(k=0;k<6;k++){
                                 if (map[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]==pers[k] && dados_aux.fome >= fome[k]+30){
                                     
-                                    fome[dados_aux.id] = dados_aux.fome+15;
+                                    fome[dados_aux.id] = dados_aux.fome+5;
                                     fome [k] = -1;
                                     dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
                                     dados.y_aux=dados_aux.Y+i;
-                                    dados.permissao=1;
+                                    dados.mens=3;
                                     break;
                                     
                                 }
-                                else {
-                                    dados.mens=0;
+                                if (map[dados_aux.Y-i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]==pers[k] && dados_aux.fome >= fome[k]+30){
+                                    
+                                    fome[dados_aux.id] = dados_aux.fome+5;
+                                    fome [k] = -1;
+                                    dados.x_aux=(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j;
+                                    dados.y_aux=dados_aux.Y-i;
+                                    dados.mens=3;
+                                    break;
+                                    
                                 }
                             }
                         }
@@ -392,10 +473,17 @@ int main()
             dados.id=6;
             dados.xb = bx;
             GeraPosicao();
-            dados.x_aux=x;
-            dados.y_aux=y;
-            if(marcacao[y] [x] ==32)
-                marcacao[y] [x] = 'r';
+
+            if(flagBoladona==1){
+                
+                if(marcacao[y] [x] ==32 && marcacao[y][x] != 'g' && marcacao[y][x] != 't'){
+                    marcacao[y] [x] = 'r';
+                    dados.x_aux=x;
+                    dados.y_aux=y;
+                    dados.mens=5;
+                }
+            }
+
             for(k=0;k<6;k++){
                 if (fome[k]==-1){
                     dados.id=k;
@@ -418,28 +506,30 @@ int main()
             //printf("ok\n"); 
             c2=0;
             GeraPosicao();
-            dados.x_aux=x;
-            dados.y_aux=y;
 
-            if(x%2==0){ // se a posição for par, gerará um "especial" podendo ser um peixe ou uma armadilha.
+            if(x%2!=0){ // se a posição ----, gerará um "especial" podendo ser um peixe ou uma armadilha.
 
                 //printf("Numero random: %d\n",x);
-                if(x<=430){
+                if(x%9==0){
                     //printf("OK, entrou no if \n");
-                 if(marcacao[y][x] == 32){
+                 if(marcacao[y][x] == 32 && marcacao[y][x] != 'r'){
                     dados.id=7;
                     marcacao[y][x] = 'g';
+                    dados.x_aux=x;
+                    dados.y_aux=y;
                     //printf("Peixe verde aparece\n");
                    }
 
                  }
 
-                 else{
+                 else if (x%7==2){
                     //printf("OK, entrou no else\n");
 
-                    if(marcacao[y][x] == 32){
+                    if(marcacao[y][x] == 32 && marcacao[y][x] != 'r'){
                     dados.id=7;
                     marcacao[y][x] = 't';
+                    dados.x_aux=x;
+                    dados.y_aux=y;
                     //printf("armadilha aparece\n");
                    }
                 }
