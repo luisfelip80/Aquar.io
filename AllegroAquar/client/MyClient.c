@@ -3,7 +3,6 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
-#include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -742,6 +741,23 @@ bool lobbyMenu(){
 							}	        	
 				        }
                 	}
+                    else {
+                        
+                        while(dados_aux.mens!=2){
+                            
+                            int mens = recvMsgFromServer(&dados_aux,WAIT_FOR_IT);
+                            // se receber server diconect, acaba com a função
+                            if (mens == SERVER_DISCONNECTED) {
+                              return false;
+                            }
+                            // se houver mensagem, ler os dados:
+                            else if (mens != NO_MESSAGE) {
+                                if(dados_aux.mens==2){
+                                    lobby_flag=true;
+                                }               
+                            }
+                        }         
+                    }
 
                 }   
         	}                                         
@@ -774,11 +790,11 @@ bool lobbyMenu(){
         }
         if(!lobby_flag){
             al_draw_bitmap(lobby, 0, 0, 0);        
-            al_draw_text(fonteChat, al_map_rgb(0,0,0),130,210,al_get_font_ascent(fonteChat), str);
+            al_draw_text(fonteChat, al_map_rgb(0,0,0),130,210,ALLEGRO_ALIGN_CENTRE +al_get_font_ascent(fonteChat), str);
             for(i = 0; i < MAX_LOG_SIZE; ++i){
-                al_draw_text(fonteChat, al_map_rgb(0, 0, 0), 63, 200 - (i*al_get_font_ascent(fonteChat)), al_get_font_ascent(fonteChat), str_buffer[i]);
+                al_draw_text(fonteChat, al_map_rgb(0, 0, 0), 63, 200 - (i*al_get_font_ascent(fonteChat)), ALLEGRO_ALIGN_CENTRE +al_get_font_ascent(fonteChat), str_buffer[i]);
             }
-            al_draw_text(fonteChat, al_map_rgb(0,0,0),63,210,al_get_font_ascent(fonteChat), "Mensagem:");
+            al_draw_text(fonteChat, al_map_rgb(0,0,0),63,210,ALLEGRO_ALIGN_CENTRE +al_get_font_ascent(fonteChat), "Mensagem:");
             al_flip_display();
         }            
     }  
