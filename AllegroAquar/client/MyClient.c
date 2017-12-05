@@ -429,7 +429,7 @@ void runGame() {
                 else if(dados.id==6){
 
                     bx=dados.xb;
-                }
+                    
 
                  if(dados.id==7 && dados.mens == 5){
                     
