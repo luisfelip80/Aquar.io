@@ -30,6 +30,7 @@ ALLEGRO_BITMAP *peixe1 = NULL;
 ALLEGRO_BITMAP *peixe2 = NULL;
 ALLEGRO_BITMAP *peixe3 = NULL;
 ALLEGRO_BITMAP *peixe4 = NULL;
+ALLEGRO_BITMAP *peixe5 = NULL;
 ALLEGRO_BITMAP *racao = NULL;
 ALLEGRO_BITMAP *isca = NULL;
 ALLEGRO_BITMAP *isca_a = NULL;
@@ -40,6 +41,7 @@ ALLEGRO_BITMAP *personagem_1 = NULL;
 ALLEGRO_BITMAP *personagem_2 = NULL;
 ALLEGRO_BITMAP *personagem_3 = NULL;
 ALLEGRO_BITMAP *personagem_4 = NULL;
+ALLEGRO_BITMAP *personagem_5 = NULL;
 ALLEGRO_DISPLAY *janela = NULL;
 ALLEGRO_FONT *fonte = NULL;
 ALLEGRO_FONT *fonteChat = NULL;
@@ -86,7 +88,7 @@ char tempo[10]="0:0",meu_nome[30];
 bool flagBoladona=false;
 bool pedir_nome = false,right=true,left=false;
 // os personagens são colocados de arcordo com o seu id.
-char fom [5],pers [2] [2] [5] = { { {'L','U','I','S'},{'P','E','R','A'} } , { {'l','u','i','s'},{'p','e','r','a'} } };
+char fom [5],pers [2] [2] [6] = { { {'L','U','I','S','F','M'},{'P','E','R','A','V','D'} } , { {'l','u','i','s','f','m'},{'p','e','r','a','v','d'} } };
 // monta as matrizes de mapa que é copiada para tela. A marcação recebe espaços vazios.
 void monta ();
 void GeraPosicao();
@@ -223,19 +225,15 @@ void mostraTela(int primeiro_X){
             else if(marcacao[i] [j] == 'l'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [1][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-89,i-65,0);
-
-
             }
             else if(marcacao[i] [j] == 'P'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [1][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-70,i-65,0);
                 //al_draw_rectangle(j-correcaoTamanho_X[matriz_tamanho[i][j]], i+correcaoTamanho_Y[matriz_tamanho[i][j]], j-correcaoTamanho_X[matriz_tamanho[i][j]]-10, i-correcaoTamanho_Y[matriz_tamanho[i][j]],al_map_rgb(255,0,0),0);
-
             }
             else if(marcacao[i] [j] == 'p'){
                 personagem_1 = al_create_sub_bitmap(peixe1, x_bit [0][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_1, j-70,i-65,0);
-
             }
             else if(marcacao[i] [j] == 'U'){
                 personagem_2 = al_create_sub_bitmap(peixe2, x_bit [0][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
@@ -269,13 +267,41 @@ void mostraTela(int primeiro_X){
                 personagem_3 = al_create_sub_bitmap(peixe3, x_bit [0][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_3, j-89,i-65,0);
             }
-            else if(marcacao[i] [j] == 'S'){
-                personagem_4 = al_create_sub_bitmap(peixe4, x_bit [1][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
+            if(marcacao[i] [j] == 'S'){
+                personagem_4 = al_create_sub_bitmap(peixe4, x_bit [0][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
+                al_draw_bitmap(personagem_4, j-89,i-65,0);
+                //al_draw_rectangle(j+correcaoTamanho_X[matriz_tamanho[i][j]], i +correcaoTamanho_Y[matriz_tamanho[i][j]], j+correcaoTamanho_X[matriz_tamanho[i][j]]+10, i-correcaoTamanho_Y[matriz_tamanho[i][j]],al_map_rgb(255,0,0),0);            
+            }
+            else if(marcacao[i] [j] == 's'){
+                personagem_4 = al_create_sub_bitmap(peixe4, x_bit [1][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_4, j-89,i-65,0);
             }
             else if(marcacao[i] [j] == 'A'){
                 personagem_4 = al_create_sub_bitmap(peixe4, x_bit [1][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
-                al_draw_bitmap(personagem_4, j-79,i-65,0);
+                al_draw_bitmap(personagem_4, j-70,i-65,0);
+                //al_draw_rectangle(j-correcaoTamanho_X[matriz_tamanho[i][j]], i+correcaoTamanho_Y[matriz_tamanho[i][j]], j-correcaoTamanho_X[matriz_tamanho[i][j]]-10, i-correcaoTamanho_Y[matriz_tamanho[i][j]],al_map_rgb(255,0,0),0);
+            }
+            else if(marcacao[i] [j] == 'a'){
+                personagem_4 = al_create_sub_bitmap(peixe4, x_bit [0][5], y_bit[matriz_tamanho[i][j]], 160,131);
+                al_draw_bitmap(personagem_4, j-70,i-65,0);
+            }
+            if(marcacao[i] [j] == 'F'){
+                personagem_5 = al_create_sub_bitmap(peixe5, x_bit [0][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
+                al_draw_bitmap(personagem_5, j-89,i-65,0);
+                //al_draw_rectangle(j+correcaoTamanho_X[matriz_tamanho[i][j]], i +correcaoTamanho_Y[matriz_tamanho[i][j]], j+correcaoTamanho_X[matriz_tamanho[i][j]]+10, i-correcaoTamanho_Y[matriz_tamanho[i][j]],al_map_rgb(255,0,0),0);            
+            }
+            else if(marcacao[i] [j] == 'f'){
+                personagem_5 = al_create_sub_bitmap(peixe5, x_bit [1][5], y_bit[matriz_tamanho[i][j]], 160,131);
+                al_draw_bitmap(personagem_5, j-89,i-65,0);
+            }
+            else if(marcacao[i] [j] == 'V'){
+                personagem_5 = al_create_sub_bitmap(peixe5, x_bit [1][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
+                al_draw_bitmap(personagem_5, j-70,i-65,0);
+                //al_draw_rectangle(j-correcaoTamanho_X[matriz_tamanho[i][j]], i+correcaoTamanho_Y[matriz_tamanho[i][j]], j-correcaoTamanho_X[matriz_tamanho[i][j]]-10, i-correcaoTamanho_Y[matriz_tamanho[i][j]],al_map_rgb(255,0,0),0);
+            }
+            else if(marcacao[i] [j] == 'v'){
+                personagem_5 = al_create_sub_bitmap(peixe5, x_bit [0][5], y_bit[matriz_tamanho[i][j]], 160,131);
+                al_draw_bitmap(personagem_5, j-70,i-65,0);
             }
         }
     }
@@ -415,6 +441,7 @@ void runGame() {
                 if(dados.fome==-1){
                     Morte(dados.X,dados.Y);
                     vivos[dados.id] = 0;
+                    return;
                 }
                 if(dados.id==6 && dados.mens==5){
                     xi++;
@@ -792,8 +819,8 @@ bool Choice(){
     marcaPosicao(0,0,209,172,0,0,0,0);
     marcaPosicao(0,0,328,172,1,0,0,0);
     marcaPosicao(0,0,458,172,2,0,0,0);
-    //marcaPosicao(0,0,193,279,3,0,0,0);
-    //marcaPosicao(0,0,324,279,4,0,0,0);
+    marcaPosicao(0,0,209,279,3,0,0,0);
+    marcaPosicao(0,0,328,279,4,0,0,0);
     //marcaPosicao(0,0,457,279,5,0,0,0);
     //marcaPosicao(0,0,193,279,6,0,0,0);
     //marcaPosicao(0,0,191,392,7,0,0,0);
@@ -813,7 +840,7 @@ bool Choice(){
             // Se o evento foi de movimentação do mouse
             if (eventoss.type == ALLEGRO_EVENT_MOUSE_AXES){
                 if(eventoss.mouse.x > 171 && eventoss.mouse.x < 252 && eventoss.mouse.y > 135 && eventoss.mouse.y <199){
-                    marcaPosicao(0,0,209,172, 0,0,1,0);
+                    marcaPosicao(0,0,209,172,0,0,1,0);
                 }
                 else if(eventoss.mouse.x > 291 && eventoss.mouse.x < 367 && eventoss.mouse.y > 135 && eventoss.mouse.y <199){
                     marcaPosicao(0,0,328,172,1,0,1,0);   
@@ -821,13 +848,15 @@ bool Choice(){
                 else if(eventoss.mouse.x > 426 && eventoss.mouse.x < 497 && eventoss.mouse.y > 135 && eventoss.mouse.y <199){
                     marcaPosicao(0,0,458,172,2,0,1,0);
                 }
-                /*
+                
                 else if(eventoss.mouse.x > 156 && eventoss.mouse.x < 237 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
-                    
+                    marcaPosicao(0,0,209,279,3,0,1,0);
+
                 }
                 else if(eventoss.mouse.x > 289 && eventoss.mouse.x < 362 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
-                    
-                }
+                    marcaPosicao(0,0,328,279,4,0,1,0);
+
+                }/*
                 else if(eventoss.mouse.x > 423 && eventoss.mouse.x < 500 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
                     
                 }
@@ -844,6 +873,8 @@ bool Choice(){
                     marcaPosicao(0,0,209,172,0,0,0,0);
                     marcaPosicao(0,0,328,172,1,0,0,0);
                     marcaPosicao(0,0,458,172,2,0,0,0);
+                    marcaPosicao(0,0,209,279,3,0,0,0);
+                    marcaPosicao(0,0,328,279,4,0,0,0);
                 }
             }
             else if (eventoss.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP){
@@ -859,13 +890,15 @@ bool Choice(){
                     Peixe_eu=2;
                     f_choice=true;
                 }
-                /*
+                
                 else if(eventoss.mouse.x > 156 && eventoss.mouse.x < 237 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
-                    
+                    Peixe_eu=3;
+                    f_choice=true;
                 }
                 else if(eventoss.mouse.x > 289 && eventoss.mouse.x < 362 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
-                    
-                }
+                    Peixe_eu=4;
+                    f_choice=true;
+                }/*
                 else if(eventoss.mouse.x > 423 && eventoss.mouse.x < 500 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
                     
                 }
@@ -887,8 +920,8 @@ bool Choice(){
                 Morte(209,172);
                 Morte(328,172);
                 Morte(458,172);
-                //Morte(193,279);
-                //Morte(324,279);
+                Morte(209,279);
+                Morte(328,279);
                 //Morte(457,279);
                 //Morte(193,279);
                 //Morte(191,392);
@@ -915,8 +948,8 @@ bool Choice(){
 Morte(209,172);
 Morte(328,172);
 Morte(458,172);
-//Morte(193,279);
-//Morte(324,279);
+Morte(209,279);
+Morte(328,279);
 //Morte(457,279);
 //Morte(193,279);
 //Morte(191,392);
@@ -1064,13 +1097,18 @@ bool carregar_arquivos(){
         fprintf(stderr, "Falha ao carregar \"peixe3.png\". \n");
         return false;
     }
-     /*
+     
     peixe4 = al_load_bitmap ("AllegroAquar/Resources/Players/peixe4.png");
-    if(!peixe1){
+    if(!peixe4){
         fprintf(stderr, "Falha ao carregar \"peixe4.png\". \n");
         return false;
     }
-    */
+    peixe5 = al_load_bitmap ("AllegroAquar/Resources/Players/peixe5.png");
+    if(!peixe5){
+        fprintf(stderr, "Falha ao carregar \"peixe5.png\". \n");
+        return false;
+    }
+    
     isca = al_load_bitmap ("AllegroAquar/Resources/Players/isca.png");
     if(!isca){
         fprintf(stderr, "Falha ao carregar \"isca.png\". \n");
@@ -1113,8 +1151,8 @@ void finalizar()
     al_destroy_bitmap(peixe1);
     al_destroy_bitmap(peixe2);
     al_destroy_bitmap(peixe3);
-    //al_destroy_bitmap(peixe4);
-    //al_destroy_bitmap(peixe5);
+    al_destroy_bitmap(peixe4);
+    al_destroy_bitmap(peixe5);
     al_destroy_font(fonte);
     al_destroy_event_queue(fila_eventos);
     al_destroy_event_queue(Eventos);

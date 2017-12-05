@@ -26,8 +26,9 @@ int clock_a=0,c2=0;
 int x,y;
 int x_player[6],y_player[6];
 int vivos[6] = {1,1,1,1,1,1};
-int correcaoTamanho_X[5] = {7,24,38,50,62};
+int correcaoTamanho_X[5] = {7,14,21,31,41};
 int correcaoTamanho_Y[5] = {10,20,30,40,50};
+//int velocidade[6] = {};
 int tamanho[6] = {0,0,0,0,0,0};
 int fome[6] = {0,0,0,0,0,0};
 int bx=1,by=0;
@@ -404,7 +405,6 @@ int main()
                                 dados.y_aux=dados_aux.Y+i;
                                 dados.mens=3;
                                 jogadores[dados_aux.Y+i] [(dados_aux.X-correcaoTamanho_X[dados_aux.tamanho])-j]=0;
-
                                 printf("ok -- \n");
                                 break;
                                 
@@ -503,10 +503,12 @@ int main()
                     vivos[k]=0;
                     for( i = 0 ; i < ALTURA_TELA  ; i++ ){
                         for( j = 0 ; j < LARGURA_TELA ; j++ ){
+
                             if(jogadores[i][j]==k){
                                dados.X=j;
                                dados.Y=i;
-                            }   
+                            }
+                               
                         }
                     }
                 }
