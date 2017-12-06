@@ -21,6 +21,8 @@
 #define ALTURA_TELA 480
 
 ALLEGRO_BITMAP *lobby = NULL;
+ALLEGRO_BITMAP *end = NULL;
+
 ALLEGRO_BITMAP *instrucoes = NULL;
 ALLEGRO_BITMAP *creditos = NULL;
 ALLEGRO_BITMAP *fundo = NULL;
@@ -31,6 +33,9 @@ ALLEGRO_BITMAP *peixe2 = NULL;
 ALLEGRO_BITMAP *peixe3 = NULL;
 ALLEGRO_BITMAP *peixe4 = NULL;
 ALLEGRO_BITMAP *peixe5 = NULL;
+ALLEGRO_BITMAP *peixe6 = NULL;
+ALLEGRO_BITMAP *peixe7 = NULL;
+
 ALLEGRO_BITMAP *racao = NULL;
 ALLEGRO_BITMAP *isca = NULL;
 ALLEGRO_BITMAP *isca_a = NULL;
@@ -42,6 +47,9 @@ ALLEGRO_BITMAP *personagem_2 = NULL;
 ALLEGRO_BITMAP *personagem_3 = NULL;
 ALLEGRO_BITMAP *personagem_4 = NULL;
 ALLEGRO_BITMAP *personagem_5 = NULL;
+ALLEGRO_BITMAP *personagem_6 = NULL;
+ALLEGRO_BITMAP *personagem_7 = NULL;
+
 ALLEGRO_DISPLAY *janela = NULL;
 ALLEGRO_FONT *fonte = NULL;
 ALLEGRO_FONT *fonteChat = NULL;
@@ -88,7 +96,7 @@ char tempo[10]="0:0",meu_nome[30];
 bool flagBoladona=false;
 bool pedir_nome = false,right=true,left=false;
 // os personagens são colocados de arcordo com o seu id.
-char fom [5],pers [2] [2] [6] = { { {'L','U','I','S','F','M'},{'P','E','R','A','V','D'} } , { {'l','u','i','s','f','m'},{'p','e','r','a','v','d'} } };
+char fom [5],pers [2] [2] [7] = { { {'L','U','I','S','F','M','C'},{'P','E','R','A','V','D','H'} } , { {'l','u','i','s','f','m','c'},{'p','e','r','a','v','d','h'} } };
 // monta as matrizes de mapa que é copiada para tela. A marcação recebe espaços vazios.
 void monta ();
 void GeraPosicao();
@@ -135,12 +143,13 @@ int main() {
     //while(!sair) {
         // roda game.
         runGame();
-        
+        al_draw_bitmap(end,0,0,0);
+        al_flip_display();
         //printf("Server disconnected! Want to try again? [Y/N] ");
         int ress;
         
     //}
-    finalizar();ALLEGRO_BITMAP *lobby = NULL;
+    finalizar();
 
     return 0;
 }
@@ -302,6 +311,42 @@ void mostraTela(int primeiro_X){
             else if(marcacao[i] [j] == 'v'){
                 personagem_5 = al_create_sub_bitmap(peixe5, x_bit [0][5], y_bit[matriz_tamanho[i][j]], 160,131);
                 al_draw_bitmap(personagem_5, j-70,i-65,0);
+            }
+            else if(marcacao[i] [j] == 'M'){
+                personagem_6 = al_create_sub_bitmap(peixe6, x_bit [0][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
+                al_draw_bitmap(personagem_6, j-89,i-65,0);
+                //al_draw_rectangle(j+correcaoTamanho_X[matriz_tamanho[i][j]], i +correcaoTamanho_Y[matriz_tamanho[i][j]], j+correcaoTamanho_X[matriz_tamanho[i][j]]+10, i-correcaoTamanho_Y[matriz_tamanho[i][j]],al_map_rgb(255,0,0),0);            
+            }
+            else if(marcacao[i] [j] == 'm'){
+                personagem_6 = al_create_sub_bitmap(peixe6, x_bit [1][5], y_bit[matriz_tamanho[i][j]], 160,131);
+                al_draw_bitmap(personagem_6, j-89,i-65,0);
+            }
+            if(marcacao[i] [j] == 'D'){
+                personagem_6 = al_create_sub_bitmap(peixe6, x_bit [1][primeiro_X], y_bit[matriz_tamanho[i][j]], 160,131);
+                al_draw_bitmap(personagem_6, j-89,i-65,0);
+                //al_draw_rectangle(j+correcaoTamanho_X[matriz_tamanho[i][j]], i +correcaoTamanho_Y[matriz_tamanho[i][j]], j+correcaoTamanho_X[matriz_tamanho[i][j]]+10, i-correcaoTamanho_Y[matriz_tamanho[i][j]],al_map_rgb(255,0,0),0);            
+            }
+            else if(marcacao[i] [j] == 'd'){
+                personagem_6 = al_create_sub_bitmap(peixe6, x_bit [0][5], y_bit[matriz_tamanho[i][j]], 160,131);
+                al_draw_bitmap(personagem_6, j-89,i-65,0);
+            }
+            else if(marcacao[i] [j] == 'C'){
+                personagem_7 = al_create_sub_bitmap(peixe7, x_bit [0][primeiro_X], y_bit[0], 160,131);
+                al_draw_bitmap(personagem_7, j-89,i-65,0);
+                //al_draw_rectangle(j+correcaoTamanho_X[matriz_tamanho[i][j]], i +correcaoTamanho_Y[matriz_tamanho[i][j]], j+correcaoTamanho_X[matriz_tamanho[i][j]]+10, i-correcaoTamanho_Y[matriz_tamanho[i][j]],al_map_rgb(255,0,0),0);            
+            }
+            else if(marcacao[i] [j] == 'c'){
+                personagem_7 = al_create_sub_bitmap(peixe7, x_bit [1][5], y_bit[0], 160,131);
+                al_draw_bitmap(personagem_7, j-89,i-65,0);
+            }
+            if(marcacao[i] [j] == 'H'){
+                personagem_7 = al_create_sub_bitmap(peixe7, x_bit [1][primeiro_X], y_bit[0], 160,131);
+                al_draw_bitmap(personagem_7, j-89,i-65,0);
+                //al_draw_rectangle(j+correcaoTamanho_X[matriz_tamanho[i][j]], i +correcaoTamanho_Y[matriz_tamanho[i][j]], j+correcaoTamanho_X[matriz_tamanho[i][j]]+10, i-correcaoTamanho_Y[matriz_tamanho[i][j]],al_map_rgb(255,0,0),0);            
+            }
+            else if(marcacao[i] [j] == 'h'){
+                personagem_7 = al_create_sub_bitmap(peixe7, x_bit [0][5], y_bit[0], 160,131);
+                al_draw_bitmap(personagem_7, j-89,i-65,0);
             }
         }
     }
@@ -542,6 +587,10 @@ bool telaInicial(){
                                                     // salva id recebido.
                                                     id=dados.id;
                                                     strcpy(meu_nome,dados.nome);
+                                                    if(strcmp(meu_nome,"pisa menos") == 0){
+                                                        Peixe_eu = 6;
+                                                        f_choice=true;
+                                                    }
                                                     pedir_nome = true;
                                                     dados.tecla=83;
                                                     dados.id=id;
@@ -821,7 +870,7 @@ bool Choice(){
     marcaPosicao(0,0,458,172,2,0,0,0);
     marcaPosicao(0,0,209,279,3,0,0,0);
     marcaPosicao(0,0,328,279,4,0,0,0);
-    //marcaPosicao(0,0,457,279,5,0,0,0);
+    marcaPosicao(0,0,458,279,5,0,0,0);
     //marcaPosicao(0,0,193,279,6,0,0,0);
     //marcaPosicao(0,0,191,392,7,0,0,0);
     //marcaPosicao(0,0,317,392,8,0,0,0);
@@ -856,10 +905,10 @@ bool Choice(){
                 else if(eventoss.mouse.x > 289 && eventoss.mouse.x < 362 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
                     marcaPosicao(0,0,328,279,4,0,1,0);
 
-                }/*
-                else if(eventoss.mouse.x > 423 && eventoss.mouse.x < 500 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
-                    
                 }
+                else if(eventoss.mouse.x > 423 && eventoss.mouse.x < 500 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
+                    marcaPosicao(0,0,458,279,5,0,1,0);
+                }/*
                 else if(eventoss.mouse.x > 154 && eventoss.mouse.x < 232 && eventoss.mouse.y > 361 && eventoss.mouse.y <424){
                     
                 }
@@ -875,6 +924,8 @@ bool Choice(){
                     marcaPosicao(0,0,458,172,2,0,0,0);
                     marcaPosicao(0,0,209,279,3,0,0,0);
                     marcaPosicao(0,0,328,279,4,0,0,0);
+                    marcaPosicao(0,0,458,279,5,0,0,0);
+
                 }
             }
             else if (eventoss.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP){
@@ -898,10 +949,11 @@ bool Choice(){
                 else if(eventoss.mouse.x > 289 && eventoss.mouse.x < 362 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
                     Peixe_eu=4;
                     f_choice=true;
-                }/*
-                else if(eventoss.mouse.x > 423 && eventoss.mouse.x < 500 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
-                    
                 }
+                else if(eventoss.mouse.x > 423 && eventoss.mouse.x < 500 && eventoss.mouse.y > 248 && eventoss.mouse.y <308){
+                    Peixe_eu=5;
+                    f_choice=true;
+                }/*
                 else if(eventoss.mouse.x > 154 && eventoss.mouse.x < 232 && eventoss.mouse.y > 361 && eventoss.mouse.y <424){
                     
                 }
@@ -922,7 +974,7 @@ bool Choice(){
                 Morte(458,172);
                 Morte(209,279);
                 Morte(328,279);
-                //Morte(457,279);
+                Morte(458,279);
                 //Morte(193,279);
                 //Morte(191,392);
                 //Morte(317,392);
@@ -950,7 +1002,7 @@ Morte(328,172);
 Morte(458,172);
 Morte(209,279);
 Morte(328,279);
-//Morte(457,279);
+Morte(458,279);
 //Morte(193,279);
 //Morte(191,392);
 //Morte(317,392);
@@ -1041,6 +1093,11 @@ bool carregar_arquivos(){
         fprintf(stderr, "Falha ao abrir \"lobby.png\". \n");
         return false;
     }
+    end = al_load_bitmap("AllegroAquar/Resources/Wallpaper/end.png");
+    if(!end){
+        fprintf(stderr, "Falha ao abrir \"end.png\". \n");
+        return false;
+    }
     creditos = al_load_bitmap("AllegroAquar/Resources/Wallpaper/creditos.png");
     
     if (!creditos){
@@ -1106,6 +1163,16 @@ bool carregar_arquivos(){
     peixe5 = al_load_bitmap ("AllegroAquar/Resources/Players/peixe5.png");
     if(!peixe5){
         fprintf(stderr, "Falha ao carregar \"peixe5.png\". \n");
+        return false;
+    }
+    peixe6 = al_load_bitmap ("AllegroAquar/Resources/Players/acm.png");
+    if(!peixe6){
+        fprintf(stderr, "Falha ao carregar \"acm.png\". \n");
+        return false;
+    }
+    peixe7 = al_load_bitmap ("AllegroAquar/Resources/Players/cap.png");
+    if(!peixe7){
+        fprintf(stderr, "Falha ao carregar \"cap.png\". \n");
         return false;
     }
     
